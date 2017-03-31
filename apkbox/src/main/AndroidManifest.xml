@@ -10,6 +10,8 @@
         android:supportsRtl="true"
         >
 
+        <activity android:name="com.liangmayong.apkbox.activity.proxy.ProxyActivity"/>
+
     </application>
 
 </manifest>

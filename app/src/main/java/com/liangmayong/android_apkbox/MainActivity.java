@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.liangmayong.apkbox.activity.ApkActivityLauncher;
 import com.liangmayong.apkbox.core.ApkLoaded;
 import com.liangmayong.apkbox.core.classloader.ApkClassLoader;
 import com.liangmayong.apkbox.core.resources.ApkNative;
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
             Log.e("TAG", loaded + "");
             imageView.setImageDrawable(loaded.getApkIcon());
             textView.setText(loaded.getApkName());
+            ApkActivityLauncher.startActivity(MainActivity.this, loaded.getApkPath(), loaded.getApkMain());
         }
     };
     private ImageView imageView;
@@ -68,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
                     out.close();
                     out = null;
                     loaded = ApkLoaded.get(MainActivity.this, pluginTemp.getPath());
-                    ApkNative.copyNativeLibrary(pluginTemp.getPath(),true);
+                    ApkNative.copyNativeLibrary(pluginTemp.getPath(), true);
                     ApkClassLoader.getClassloader(loaded.getApkPath());
                     Message message = new Message();
                     message.what = 1;

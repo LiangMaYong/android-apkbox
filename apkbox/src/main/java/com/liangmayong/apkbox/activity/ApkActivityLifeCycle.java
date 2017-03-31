@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.liangmayong.apkbox.core.classloader.ApkClassLoader;
+
 /**
  * Created by LiangMaYong on 2017/3/29.
  */
@@ -74,21 +76,5 @@ public class ApkActivityLifeCycle {
         Log.e("TAG", "onResume");
     }
 
-    /**
-     * newActivity
-     *
-     * @param cl        cl
-     * @param className className
-     * @param intent    intent
-     * @return new activity
-     */
-    public static Activity newActivity(ClassLoader cl, String className, Intent intent) {
-        Log.e("TAG", "newActivity");
-        try {
-            return (Activity) cl.loadClass(className).newInstance();
-        } catch (Exception e) {
-            return null;
-        }
-    }
 
 }

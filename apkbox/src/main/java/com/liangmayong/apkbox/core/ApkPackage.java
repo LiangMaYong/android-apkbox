@@ -9,6 +9,7 @@ import android.content.res.Resources;
 
 import com.liangmayong.apkbox.core.classloader.ApkClassLoader;
 import com.liangmayong.apkbox.core.context.ApkContext;
+import com.liangmayong.apkbox.core.manager.ApkApplicationMgr;
 import com.liangmayong.apkbox.core.resources.ApkResources;
 
 /**
@@ -96,7 +97,7 @@ public class ApkPackage {
     }
 
     public Application getApplication() {
-        return null;
+        return ApkApplicationMgr.handleCreateApplication(loaded.getApkPath());
     }
 
 }

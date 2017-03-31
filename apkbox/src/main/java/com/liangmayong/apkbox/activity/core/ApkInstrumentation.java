@@ -236,7 +236,7 @@ public final class ApkInstrumentation extends Instrumentation {
     @Override
     public Activity newActivity(ClassLoader cl, String className, Intent intent)
             throws InstantiationException, IllegalAccessException, ClassNotFoundException {
-        Activity activity = ApkActivityLifeCycle.newActivity(cl, className, intent);
+        Activity activity = ApkActivityIntentModify.modifyNewActivity(cl, className, intent);
         if (activity != null) {
             return activity;
         }
@@ -245,6 +245,7 @@ public final class ApkInstrumentation extends Instrumentation {
 
     @Override
     public void callActivityOnCreate(Activity target, Bundle icicle) {
+        ApkActivityIntentModify.modifyOnCreate(target, icicle);
         ApkActivityLifeCycle.onCreate(target, icicle);
         mInstrumentation.callActivityOnCreate(target, icicle);
     }

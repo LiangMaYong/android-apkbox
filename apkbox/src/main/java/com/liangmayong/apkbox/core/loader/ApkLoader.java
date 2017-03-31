@@ -49,7 +49,7 @@ public class ApkLoader {
                         info.sourceDir = apkPath;
                         info.publicSourceDir = apkPath;
                     }
-                    info.nativeLibraryDir = ApkNative.copyNativeLibrary(apkPath, true);
+                    info.nativeLibraryDir = ApkNative.copyNativeLibrary(apkPath);
                     String applicationName = ApkManifestParser.getApplicationName(apkPath);
                     if (applicationName != null && !"".equals(applicationName)) {
                         applicationName = replaceClassName(pkg.packageName, applicationName);

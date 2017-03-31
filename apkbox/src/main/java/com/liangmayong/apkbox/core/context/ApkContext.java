@@ -2,10 +2,13 @@ package com.liangmayong.apkbox.core.context;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
+import android.os.Bundle;
 
+import com.liangmayong.apkbox.activity.ApkActivityConstant;
 import com.liangmayong.apkbox.core.ApkLoaded;
 import com.liangmayong.apkbox.reflect.ApkMethod;
 
@@ -109,5 +112,30 @@ public final class ApkContext extends Application {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void startActivities(Intent[] intents) {
+        for (int i = 0; i < intents.length; i++) {
+            startActivity(intents[0]);
+        }
+    }
+
+    @Override
+    public void startActivities(Intent[] intents, Bundle options) {
+        for (int i = 0; i < intents.length; i++) {
+            startActivity(intents[0], options);
+        }
+    }
+
+    @Override
+    public void startActivity(Intent intent, Bundle options) {
+        if (!intent.hasExtra(ApkActivityConstant.EXTRA_APK_PATH) && intent.getComponent() != null) {
+            intent.putExtra(ApkActivityConstant.EXTRA_APK_PATH, apkPath);
+            if (intent.hasExtra(ApkActivityConstant.EXTRA_APK_ACTIVITY)) {
+                intent.putExtra(ApkActivityConstant.EXTRA_APK_ACTIVITY, intent.getComponent().getClassName());
+            }
+        }
+        super.startActivity(intent, options);
     }
 }
