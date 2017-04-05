@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.PersistableBundle;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
@@ -187,6 +188,10 @@ public class Instrumentation {
 
     }
 
+    public void callActivityOnCreate(Activity activity, Bundle icicle, PersistableBundle persistentState) {
+
+    }
+
     public void callActivityOnDestroy(Activity target) {
 
     }
@@ -195,7 +200,15 @@ public class Instrumentation {
 
     }
 
+    public void callActivityOnRestoreInstanceState(Activity activity, Bundle savedInstanceState, PersistableBundle persistentState) {
+
+    }
+
     public void callActivityOnPostCreate(Activity target, Bundle icicle) {
+
+    }
+
+    public void callActivityOnPostCreate(Activity activity, Bundle icicle, PersistableBundle persistentState) {
 
     }
 
@@ -219,6 +232,10 @@ public class Instrumentation {
     }
 
     public void callActivityOnSaveInstanceState(Activity target, Bundle outState) {
+    }
+
+    public void callActivityOnSaveInstanceState(Activity activity, Bundle outState, PersistableBundle outPersistentState) {
+
     }
 
     public void callActivityOnPause(Activity target) {
@@ -247,23 +264,7 @@ public class Instrumentation {
         return null;
     }
 
-    public ActivityResult execStartActivity(final Context who, final IBinder contextThread, final IBinder token,
-                                            final Activity target, final Intent intent, final int requestCode) throws Exception {
-        return null;
-    }
-
-    public ActivityResult execStartActivity(final Context who, final IBinder contextThread, final IBinder token,
-                                            final Activity target, final Intent intent, final int requestCode, final Bundle options) throws Exception {
-        return null;
-    }
-
-    public ActivityResult execStartActivity(final Context who, final IBinder contextThread, final IBinder token,
-                                            final Fragment fragment, final Intent intent, final int requestCode) throws Exception {
-        return null;
-    }
-
-    public ActivityResult execStartActivity(final Context who, final IBinder contextThread, final IBinder token,
-                                            final Fragment fragment, final Intent intent, final int requestCode, final Bundle options) throws Exception {
+    public UiAutomation getUiAutomation(int flags) {
         return null;
     }
 

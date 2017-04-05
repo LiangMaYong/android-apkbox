@@ -1,6 +1,6 @@
 package com.liangmayong.apkbox.core.resources;
 
-import com.liangmayong.apkbox.core.utils.ApkLogger;
+import com.liangmayong.apkbox.utils.ApkLogger;
 
 import java.io.File;
 import java.io.FileOutputStream;

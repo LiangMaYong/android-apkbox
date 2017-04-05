@@ -2,7 +2,7 @@ package com.liangmayong.apkbox;
 
 import android.app.Application;
 
-import com.liangmayong.apkbox.activity.ApkActivityHook;
+import com.liangmayong.apkbox.hook.ApkHook;
 
 /**
  * Created by LiangMaYong on 2017/3/29.
@@ -48,8 +48,8 @@ public class ApkBox {
         if (application == null) {
             return false;
         }
-        ApkActivityHook.getInstance().hook(application);
-        return false;
+        ApkHook.hook(application);
+        return true;
     }
 
 

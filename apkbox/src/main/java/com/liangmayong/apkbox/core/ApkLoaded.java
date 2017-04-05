@@ -1,11 +1,23 @@
 package com.liangmayong.apkbox.core;
 
+import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
+import android.content.res.AssetManager;
+import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 
+import com.liangmayong.apkbox.core.classloader.ApkClassLoader;
+import com.liangmayong.apkbox.core.constant.ApkConstant;
+import com.liangmayong.apkbox.core.context.ApkContext;
 import com.liangmayong.apkbox.core.loader.ApkLoader;
+import com.liangmayong.apkbox.core.resources.ApkResources;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -49,8 +61,8 @@ public class ApkLoaded {
 
     private String apkPath = "";
     private String apkName = "";
-    private String apkMain = "";
-    private String apkApp = "";
+    private String apkLauncher = "";
+    private Application apkApplication = null;
     private Drawable apkIcon = null;
     private PackageInfo apkInfo = null;
     private String apkSignture = "";
@@ -73,20 +85,20 @@ public class ApkLoaded {
         this.apkName = apkName;
     }
 
-    public String getApkMain() {
-        return apkMain;
+    public String getApkLauncher() {
+        return apkLauncher;
     }
 
-    public void setApkMain(String apkMain) {
-        this.apkMain = apkMain;
+    public void setApkLauncher(String apkLauncher) {
+        this.apkLauncher = apkLauncher;
     }
 
-    public String getApkApp() {
-        return apkApp;
+    public Application getApkApplication() {
+        return apkApplication;
     }
 
-    public void setApkApp(String apkApp) {
-        this.apkApp = apkApp;
+    public void setApkApplication(Application apkApplication) {
+        this.apkApplication = apkApplication;
     }
 
     public Drawable getApkIcon() {
@@ -167,8 +179,82 @@ public class ApkLoaded {
         }
     }
 
-    public ApkPackage getPackage() {
-        return new ApkPackage(this);
+    /////////////////////////////////////////////////////////////////////
+    //////// Hook Class and Res
+    /////////////////////////////////////////////////////////////////////
+
+    public ClassLoader getClassLoader() {
+        return ApkClassLoader.getClassloader(getApkPath());
+    }
+
+    public Resources getResources(Context context) {
+        return ApkResources.getResources(context, getApkPath());
+    }
+
+    public AssetManager getAssets(Context context) {
+        return ApkResources.getAssets(context, getApkPath());
+    }
+
+    public Context getContext(Context baseContext) {
+        return ApkContext.get(baseContext, getApkPath());
+    }
+
+
+    /**
+     * getActivityInfo
+     *
+     * @param actName actName
+     * @return activity info
+     */
+    public ActivityInfo getActivityInfo(String actName) {
+        String activityName = ApkLoader.parserClassName(getApkInfo().packageName, actName);
+        if (getApkInfo().activities != null) {
+            for (ActivityInfo act : getApkInfo().activities) {
+                if (act.name.equals(activityName)) {
+                    ApplicationInfo info = getApkInfo().applicationInfo;
+                    if (info != null) {
+                        act.applicationInfo = info;
+                    }
+                    return act;
+                }
+            }
+        }
+        return null;
+    }
+
+    /////////////////////////////////////////////////////////////////////
+    //////// Launch
+    /////////////////////////////////////////////////////////////////////
+
+    public boolean launch(Context context, Bundle bundle) {
+        try {
+            Class<?> actClass = getClassLoader().loadClass(getApkLauncher());
+            Intent intent = new Intent(context, actClass);
+            if (bundle != null) {
+                intent.putExtras(bundle);
+            }
+            intent.putExtra(ApkConstant.EXTRA_APK_PATH, getApkPath());
+            context.startActivity(intent);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean launchForResult(Activity activity, Bundle bundle, int requestCode) {
+        try {
+            Class<?> actClass = getClassLoader().loadClass(getApkLauncher());
+            Intent intent = new Intent(activity, actClass);
+            if (bundle != null) {
+                intent.putExtras(bundle);
+            }
+            intent.putExtra(ApkConstant.EXTRA_APK_PATH, getApkPath());
+            activity.startActivityForResult(intent, requestCode);
+            return true;
+        } catch (Exception e) {
+        }
+        return false;
     }
 
     @Override
@@ -176,11 +262,11 @@ public class ApkLoaded {
         return "ApkLoaded{" +
                 "apkPath='" + apkPath + '\'' +
                 ", apkName='" + apkName + '\'' +
-                ", apkMain='" + apkMain + '\'' +
-                ", apkApp='" + apkApp + '\'' +
                 ", apkIcon=" + apkIcon +
                 ", apkInfo=" + apkInfo +
                 ", apkSignture='" + apkSignture + '\'' +
+                ", apkLauncher='" + apkLauncher + '\'' +
+                ", apkApplication='" + apkApplication + '\'' +
                 ", configures=" + configures +
                 ", filters=" + filters +
                 '}';

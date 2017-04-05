@@ -43,21 +43,12 @@ public final class ApkClassLoader {
      * @return classloader
      */
     public static ClassLoader getClassloader(String apkPath) {
-        return loadClassloader(apkPath, false);
-    }
-
-    /**
-     * loadClassloader
-     *
-     * @param apkPath apkPath
-     */
-    public static ClassLoader loadClassloader(String apkPath, boolean force) {
         ClassLoader classLoader = null;
         if (apkPath == null || "".equals(apkPath) || !(new File(apkPath).exists())) {
             classLoader = ApkClassLoader.class.getClassLoader();
         } else {
             String key = apkPath;
-            if (!force && CLASSLOADERS.containsKey(key)) {
+            if (CLASSLOADERS.containsKey(key)) {
                 classLoader = CLASSLOADERS.get(key);
             } else {
                 classLoader = newApkDexLoader(apkPath);
@@ -77,7 +68,7 @@ public final class ApkClassLoader {
         try {
             ClassLoader dexClassLoader = new DexClassLoader(apkPath, new File(apkPath).getParent(),
                     ApkNative.getNativePath(apkPath), ClassLoader.getSystemClassLoader());
-            return new ApkDexClassLoader(dexClassLoader);
+            return dexClassLoader;
         } catch (Exception e) {
             return null;
         }

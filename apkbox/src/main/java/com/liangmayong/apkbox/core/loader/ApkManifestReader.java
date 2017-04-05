@@ -272,7 +272,7 @@ public final class ApkManifestReader {
                 eventType = next();
             }
             if (eventType != START_TAG && eventType != END_TAG) {
-                throw new XmlPullParserException("Expected start or end tag.", this, null);
+                throw new XmlPullParserException("Expected launch or end tag.", this, null);
             }
             return eventType;
         }
@@ -1387,7 +1387,7 @@ public final class ApkManifestReader {
         /**
          * Returns style information - array of int triplets, where in each triplet:
          * * first int is index of tag name ('b','i', etc.) * second int is tag
-         * start index in string * third int is tag end index in string
+         * launch index in string * third int is tag end index in string
          */
         private int[] getStyle(int index) {
             if (m_styleOffsets == null || m_styles == null || index >= m_styleOffsets.length) {

@@ -1,5 +1,6 @@
 package com.liangmayong.apkbox.core.loader;
 
+import android.app.Application;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
@@ -8,10 +9,11 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 
 import com.liangmayong.apkbox.core.ApkLoaded;
-import com.liangmayong.apkbox.core.classloader.ApkClassLoader;
 import com.liangmayong.apkbox.core.resources.ApkNative;
 import com.liangmayong.apkbox.core.resources.ApkResources;
-import com.liangmayong.apkbox.core.utils.ApkSignture;
+import com.liangmayong.apkbox.core.resources.ApkSignture;
+import com.liangmayong.apkbox.reflect.ApkMethod;
+import com.liangmayong.apkbox.reflect.ApkReflect;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
@@ -52,20 +54,19 @@ public class ApkLoader {
                     info.nativeLibraryDir = ApkNative.copyNativeLibrary(apkPath);
                     String applicationName = ApkManifestParser.getApplicationName(apkPath);
                     if (applicationName != null && !"".equals(applicationName)) {
-                        applicationName = replaceClassName(pkg.packageName, applicationName);
+                        applicationName = parserClassName(pkg.packageName, applicationName);
                         info.className = applicationName;
                     }
                     loaded.setApkPath(apkPath);
                     loaded.setApkName(pm.getApplicationLabel(info).toString());
                     loaded.setApkName(pm.getApplicationLabel(info).toString());
                     loaded.setApkIcon(info.loadIcon(pm));
-                    loaded.setApkApp(applicationName);
                     loaded.setApkSignture(ApkSignture.getSignture(context, apkPath));
                     loaded.setApkInfo(pkg);
                     loaded.setConfigures(ApkConfigure.getConfigure(ApkResources.getAssets(context, apkPath)));
                     loaded.setFilters(ApkManifestParser.getIntentFilter(apkPath));
-                    loaded.setApkMain(getMainActivityName(info.packageName, loaded));
-                    ApkClassLoader.loadClassloader(apkPath, true);
+                    loaded.setApkLauncher(getMainActivityName(loaded, info.packageName));
+                    loaded.setApkApplication(createApplication(context, loaded, applicationName));
                     return loaded;
                 }
             } catch (Exception e) {
@@ -74,39 +75,13 @@ public class ApkLoader {
         return null;
     }
 
-
     /**
-     * getMainActivityName
-     *
-     * @return main
-     */
-    private static String getMainActivityName(String packageName, ApkLoaded loaded) {
-        String main = loaded.getConfigure("main");
-        if (main == null || "".equals(main)) {
-            Map<String, IntentFilter> filters = loaded.getFilters();
-            for (Map.Entry<String, IntentFilter> entry : filters.entrySet()) {
-                IntentFilter intentFilter = entry.getValue();
-                if (intentFilter.countCategories() > 0) {
-                    for (int i = 0; i < intentFilter.countCategories(); i++) {
-                        String category = intentFilter.getCategory(i);
-                        if (category.equals("android.intent.category.LAUNCHER")) {
-                            return replaceClassName(packageName, entry.getKey());
-                        }
-                    }
-                }
-            }
-            return "";
-        }
-        return replaceClassName(packageName, main);
-    }
-
-    /**
-     * replaceClassName
+     * parserClassName
      *
      * @param className className
      * @return className
      */
-    private static String replaceClassName(String packageName, String className) {
+    public static String parserClassName(String packageName, String className) {
         String newClassName = "";
         if (className.startsWith(".")) {
             newClassName = packageName + className;
@@ -118,4 +93,51 @@ public class ApkLoader {
         return newClassName;
     }
 
+    /**
+     * getApkLauncher
+     *
+     * @return main
+     */
+    private static String getMainActivityName(ApkLoaded loaded, String packageName) {
+        String main = loaded.getConfigure("main");
+        if (main == null || "".equals(main)) {
+            Map<String, IntentFilter> filters = loaded.getFilters();
+            for (Map.Entry<String, IntentFilter> entry : filters.entrySet()) {
+                IntentFilter intentFilter = entry.getValue();
+                if (intentFilter.countCategories() > 0) {
+                    for (int i = 0; i < intentFilter.countCategories(); i++) {
+                        String category = intentFilter.getCategory(i);
+                        if (category.equals("android.intent.category.LAUNCHER")) {
+                            return parserClassName(packageName, entry.getKey());
+                        }
+                    }
+                }
+            }
+            return "";
+        }
+        return parserClassName(packageName, main);
+    }
+
+    /**
+     * createApplication
+     *
+     * @param context         context
+     * @param applicationName applicationName
+     * @return application
+     */
+    private static Application createApplication(Context context, ApkLoaded loaded, String applicationName) {
+        Application application = null;
+        Context ctx = loaded.getContext(context);
+        try {
+            application = (Application) loaded.getClassLoader().loadClass(applicationName)
+                    .newInstance();
+            ApkMethod method = new ApkMethod(Application.class, application, "attach", Context.class);
+            method.invoke(ctx);
+            ApkReflect.setField(Application.class, application, "mBase", ctx);
+            application.onCreate();
+        } catch (Exception e) {
+            application = (Application) ctx;
+        }
+        return application;
+    }
 }

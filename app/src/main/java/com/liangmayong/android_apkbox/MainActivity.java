@@ -10,10 +10,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.liangmayong.apkbox.activity.ApkActivityLauncher;
 import com.liangmayong.apkbox.core.ApkLoaded;
-import com.liangmayong.apkbox.core.classloader.ApkClassLoader;
-import com.liangmayong.apkbox.core.resources.ApkNative;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -23,7 +20,7 @@ import java.io.OutputStream;
 public class MainActivity extends AppCompatActivity {
 
     private ApkLoaded loaded = null;
-    private String appName = "app.apk";
+    private String appName = "base3.apk";
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -32,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
             Log.e("TAG", loaded + "");
             imageView.setImageDrawable(loaded.getApkIcon());
             textView.setText(loaded.getApkName());
-            ApkActivityLauncher.startActivity(MainActivity.this, loaded.getApkPath(), loaded.getApkMain());
+            loaded.launch(MainActivity.this, null);
         }
     };
     private ImageView imageView;
@@ -70,8 +67,6 @@ public class MainActivity extends AppCompatActivity {
                     out.close();
                     out = null;
                     loaded = ApkLoaded.get(MainActivity.this, pluginTemp.getPath());
-                    ApkNative.copyNativeLibrary(pluginTemp.getPath(), true);
-                    ApkClassLoader.getClassloader(loaded.getApkPath());
                     Message message = new Message();
                     message.what = 1;
                     message.obj = loaded;
