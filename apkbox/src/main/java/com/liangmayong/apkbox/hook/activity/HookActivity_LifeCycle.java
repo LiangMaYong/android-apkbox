@@ -6,8 +6,7 @@ import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.util.Log;
 
-import com.liangmayong.apkbox.hook.activity.HookActivity_New;
-import com.liangmayong.apkbox.hook.activity.HookActivity_OnCreate;
+import com.liangmayong.apkbox.utils.ApkLogger;
 
 /**
  * Created by LiangMaYong on 2017/4/5.
@@ -19,41 +18,41 @@ public class HookActivity_LifeCycle {
     }
 
     public static Activity onNewActivity(ClassLoader cl, String className, Intent intent) {
+        ApkLogger.get().debug("LifeCycle_onNewActivity",null);
         return HookActivity_New.onNewActivity(cl, className, intent);
     }
 
     public static void onPostCreate(Activity target, Bundle icicle) {
-        Log.e("TAG", "onPostCreate");
+        ApkLogger.get().debug("LifeCycle_onPostCreate",null);
     }
 
     public static void onCreate(Activity target, Bundle icicle) {
         HookActivity_OnCreate.onCreate(target, icicle);
-        Log.e("TAG", "onCreate");
-        Log.e("TAG", "onCreate:" + target.getApplication());
+        ApkLogger.get().debug("LifeCycle_onCreate",null);
     }
 
     public static void onStart(Activity target) {
-        Log.e("TAG", "onStart");
+        ApkLogger.get().debug("LifeCycle_onStart",null);
     }
 
     public static void onRestart(Activity target) {
-        Log.e("TAG", "onRestart");
+        ApkLogger.get().debug("LifeCycle_onRestart",null);
     }
 
     public static void onDestroy(Activity target) {
-        Log.e("TAG", "onDestroy");
+        ApkLogger.get().debug("LifeCycle_onDestroy",null);
     }
 
     public static void onPause(Activity target) {
-        Log.e("TAG", "onPause");
+        ApkLogger.get().debug("LifeCycle_onPause",null);
     }
 
     public static void onStop(Activity target) {
-        Log.e("TAG", "onStop");
+        ApkLogger.get().debug("LifeCycle_onStop",null);
     }
 
     public static void onResume(Activity target) {
-        Log.e("TAG", "onResume");
+        ApkLogger.get().debug("LifeCycle_onResume",null);
     }
 
     /////////////////////////////////////////////////////////////////////////////
@@ -61,11 +60,11 @@ public class HookActivity_LifeCycle {
     /////////////////////////////////////////////////////////////////////////////
 
     public static void onRestoreInstanceState(Activity activity, Bundle outState) {
-        Log.e("TAG", "onRestoreInstanceState");
+        ApkLogger.get().debug("LifeCycle_onRestoreInstanceState",null);
     }
 
     public static void onSaveInstanceState(Activity activity, Bundle outState) {
-        Log.e("TAG", "onSaveInstanceState");
+        ApkLogger.get().debug("LifeCycle_onSaveInstanceState",null);
     }
 
     /////////////////////////////////////////////////////////////////////////////
@@ -73,18 +72,18 @@ public class HookActivity_LifeCycle {
     /////////////////////////////////////////////////////////////////////////////
 
     public static void onPostCreate(Activity target, Bundle icicle, PersistableBundle persistentState) {
-        Log.e("TAG", "onPostCreate");
+        ApkLogger.get().debug("LifeCycle_onPostCreate",null);
     }
 
     public static void onCreate(Activity target, Bundle icicle, PersistableBundle persistentState) {
-        Log.e("TAG", "onCreate");
+        ApkLogger.get().debug("LifeCycle_onCreate",null);
     }
 
     public static void onRestoreInstanceState(Activity activity, Bundle outState, PersistableBundle persistentState) {
-        Log.e("TAG", "onRestoreInstanceState");
+        ApkLogger.get().debug("LifeCycle_onRestoreInstanceState",null);
     }
 
     public static void onSaveInstanceState(Activity activity, Bundle outState, PersistableBundle persistentState) {
-        Log.e("TAG", "onSaveInstanceState");
+        ApkLogger.get().debug("LifeCycle_onSaveInstanceState",null);
     }
 }

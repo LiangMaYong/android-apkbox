@@ -15,6 +15,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.PersistableBundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 

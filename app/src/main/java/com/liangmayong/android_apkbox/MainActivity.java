@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -31,7 +32,6 @@ public class MainActivity extends AppCompatActivity {
             Log.e("TAG", loaded + "");
             imageView.setImageDrawable(loaded.getApkIcon());
             textView.setText(loaded.getApkName());
-            loaded.launch(MainActivity.this, null);
         }
     };
     private ImageView imageView;
@@ -49,6 +49,14 @@ public class MainActivity extends AppCompatActivity {
         startService(intent);
 
         stopService(new Intent(this, SubService.class));
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (loaded != null){
+                    loaded.launch(MainActivity.this, null);
+                }
+            }
+        });
     }
 
 

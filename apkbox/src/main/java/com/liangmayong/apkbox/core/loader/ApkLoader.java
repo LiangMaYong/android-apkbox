@@ -68,6 +68,7 @@ public class ApkLoader {
                     loaded.setConfigures(ApkConfigure.getConfigure(ApkResources.getAssets(context, apkPath)));
                     loaded.setFilters(ApkManifestParser.getIntentFilter(apkPath));
                     loaded.setApkLauncher(getMainActivityName(loaded, info.packageName));
+                    ApkReceiver.unregisterReceiver(loaded);
                     loaded.setApkApplication(createApplication(context, loaded, applicationName));
                     ApkReceiver.registerReceiver(context, loaded);
                     return loaded;

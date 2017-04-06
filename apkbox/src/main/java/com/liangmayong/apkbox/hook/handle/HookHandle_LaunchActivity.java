@@ -23,8 +23,8 @@ public class HookHandle_LaunchActivity {
             Field intent = obj.getClass().getDeclaredField("intent");
             intent.setAccessible(true);
             Intent raw = (Intent) intent.get(obj);
-            if (raw.hasExtra(ApkConstant.EXTRA_TARGET_INTENT)) {
-                Intent target = raw.getParcelableExtra(ApkConstant.EXTRA_TARGET_INTENT);
+            if (raw.hasExtra(ApkConstant.EXTRA_APK_TARGET_INTENT)) {
+                Intent target = raw.getParcelableExtra(ApkConstant.EXTRA_APK_TARGET_INTENT);
                 intent.set(obj, target);
             }
         } catch (Exception e) {

@@ -17,24 +17,30 @@ import java.util.Map;
  */
 public final class ApkReceiver {
 
-    // plugin STRING_LINKED_LIST_HASH_MAP
-    private static final Map<String, LinkedList<BroadcastReceiver>> STRING_LINKED_LIST_HASH_MAP = new HashMap<String, LinkedList<BroadcastReceiver>>();
+    // BROADCAST_RECEIVER_MAP
+    private static final Map<String, LinkedList<BroadcastReceiver>> BROADCAST_RECEIVER_MAP = new HashMap<String, LinkedList<BroadcastReceiver>>();
+    // CONTEXT_MAP
+    private static final Map<String, Context> CONTEXT_MAP = new HashMap<String, Context>();
 
     /**
      * unregisterReceiver
      *
-     * @param context context
-     * @param loaded  loaded
+     * @param loaded loaded
      */
-    public static void unregisterReceiver(Context context, ApkLoaded loaded) {
+    public static void unregisterReceiver(ApkLoaded loaded) {
         String key = loaded.getApkPath();
-        if (STRING_LINKED_LIST_HASH_MAP.containsKey(key)) {
-            LinkedList<BroadcastReceiver> receivers = STRING_LINKED_LIST_HASH_MAP.get(key);
+        if (!CONTEXT_MAP.containsKey(key)) {
+            return;
+        }
+        Context context = CONTEXT_MAP.get(key);
+        if (BROADCAST_RECEIVER_MAP.containsKey(key)) {
+            LinkedList<BroadcastReceiver> receivers = BROADCAST_RECEIVER_MAP.get(key);
             for (int i = 0; i < receivers.size(); i++) {
                 context.getApplicationContext().unregisterReceiver(receivers.get(i));
             }
-            STRING_LINKED_LIST_HASH_MAP.remove(key);
+            BROADCAST_RECEIVER_MAP.remove(key);
         }
+        CONTEXT_MAP.containsKey(key);
     }
 
     /**
@@ -48,10 +54,9 @@ public final class ApkReceiver {
             return;
         }
         String key = loaded.getApkPath();
-        if (STRING_LINKED_LIST_HASH_MAP.containsKey(key)) {
+        if (BROADCAST_RECEIVER_MAP.containsKey(key)) {
             return;
         }
-        unregisterReceiver(context, loaded);
         if (loaded != null) {
             Map<String, IntentFilter> filters = loaded.getFilters();
             LinkedList<BroadcastReceiver> receivers = new LinkedList<BroadcastReceiver>();
@@ -71,7 +76,7 @@ public final class ApkReceiver {
                 } catch (ClassNotFoundException e) {
                 }
             }
-            STRING_LINKED_LIST_HASH_MAP.put(key, receivers);
+            BROADCAST_RECEIVER_MAP.put(key, receivers);
         }
     }
 }

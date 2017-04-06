@@ -16,7 +16,8 @@ public class HookActivity_Intent {
     }
 
     public static Intent modify(Activity target, Intent intent) {
-        if (!intent.hasExtra(ApkConstant.EXTRA_APK_PATH) && target.getIntent().hasExtra(ApkConstant.EXTRA_APK_PATH)) {
+        if (!intent.hasExtra(ApkConstant.EXTRA_APK_PATH)
+                && target.getIntent().hasExtra(ApkConstant.EXTRA_APK_PATH)) {
             Bundle extras = intent.getExtras();
             if (extras != null) {
                 intent.replaceExtras(new Bundle());
@@ -25,7 +26,7 @@ public class HookActivity_Intent {
             }
             intent.putExtra(ApkConstant.EXTRA_APK_PATH, target.getIntent().getStringExtra(ApkConstant.EXTRA_APK_PATH));
         }
-        return intent;
+        return HookActivity_Component.modify(intent, target.getPackageName());
     }
 
 }

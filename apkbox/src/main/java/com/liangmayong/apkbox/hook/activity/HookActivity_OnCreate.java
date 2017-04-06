@@ -32,7 +32,6 @@ public class HookActivity_OnCreate {
             }
             target.getIntent().removeExtra(ApkConstant.EXTRA_APK_EXTRAS);
         }
-        Log.e("TAG", "onCreate");
     }
 
 }

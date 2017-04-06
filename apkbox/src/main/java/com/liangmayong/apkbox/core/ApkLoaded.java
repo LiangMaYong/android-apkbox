@@ -12,6 +12,7 @@ import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.liangmayong.apkbox.core.classloader.ApkClassLoader;
 import com.liangmayong.apkbox.core.constant.ApkConstant;
@@ -252,6 +253,7 @@ public class ApkLoaded {
                 intent.putExtras(bundle);
             }
             intent.putExtra(ApkConstant.EXTRA_APK_PATH, getApkPath());
+            Log.e("TAG-LAUNCH", intent + "");
             context.startActivity(intent);
             return true;
         } catch (Exception e) {
