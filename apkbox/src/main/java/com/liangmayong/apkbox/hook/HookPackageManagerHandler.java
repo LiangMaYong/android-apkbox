@@ -3,7 +3,7 @@ package com.liangmayong.apkbox.hook;
 import android.annotation.TargetApi;
 import android.os.Build;
 
-import com.liangmayong.apkbox.hook.method.HookGetActivityInfo;
+import com.liangmayong.apkbox.hook.handle.HookProxy_GetActivityInfo;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -23,7 +23,7 @@ public class HookPackageManagerHandler implements InvocationHandler {
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         if ("getActivityInfo".equals(method.getName())) {
-            return HookGetActivityInfo.getActivityInfo(mBase, method, args);
+            return HookProxy_GetActivityInfo.getActivityInfo(mBase, method, args);
         }
         return method.invoke(mBase, args);
     }

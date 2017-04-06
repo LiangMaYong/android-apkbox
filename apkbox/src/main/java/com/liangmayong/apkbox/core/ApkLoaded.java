@@ -66,6 +66,8 @@ public class ApkLoaded {
     private Drawable apkIcon = null;
     private PackageInfo apkInfo = null;
     private String apkSignture = "";
+    private int apkVersionCode = 1;
+    private String apkVersionName = "";
     private final Map<String, String> configures = new HashMap<>();
     private final Map<String, IntentFilter> filters = new HashMap<>();
 
@@ -123,6 +125,22 @@ public class ApkLoaded {
 
     public void setApkSignture(String apkSignture) {
         this.apkSignture = apkSignture;
+    }
+
+    public int getApkVersionCode() {
+        return apkVersionCode;
+    }
+
+    public void setApkVersionCode(int apkVersionCode) {
+        this.apkVersionCode = apkVersionCode;
+    }
+
+    public String getApkVersionName() {
+        return apkVersionName;
+    }
+
+    public void setApkVersionName(String apkVersionName) {
+        this.apkVersionName = apkVersionName;
     }
 
     public Map<String, String> getConfigures() {
@@ -262,11 +280,13 @@ public class ApkLoaded {
         return "ApkLoaded{" +
                 "apkPath='" + apkPath + '\'' +
                 ", apkName='" + apkName + '\'' +
+                ", apkLauncher='" + apkLauncher + '\'' +
+                ", apkApplication=" + apkApplication +
                 ", apkIcon=" + apkIcon +
                 ", apkInfo=" + apkInfo +
                 ", apkSignture='" + apkSignture + '\'' +
-                ", apkLauncher='" + apkLauncher + '\'' +
-                ", apkApplication='" + apkApplication + '\'' +
+                ", apkVersionCode=" + apkVersionCode +
+                ", apkVersionName='" + apkVersionName + '\'' +
                 ", configures=" + configures +
                 ", filters=" + filters +
                 '}';

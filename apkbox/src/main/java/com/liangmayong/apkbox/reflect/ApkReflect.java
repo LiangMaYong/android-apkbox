@@ -1,5 +1,7 @@
 package com.liangmayong.apkbox.reflect;
 
+import com.liangmayong.apkbox.utils.ApkLogger;
+
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
@@ -107,6 +109,21 @@ public final class ApkReflect {
             }
         }
         return map;
+    }
+
+    /**
+     * print
+     *
+     * @param object object
+     */
+    public static void print(Object object) {
+        if (object != null) {
+            Map<String, Object> fields = getFields(object.getClass(), object);
+            ApkLogger.get().debug("print " + object + "", null);
+            for (Map.Entry<String, Object> entry : fields.entrySet()) {
+                ApkLogger.get().debug("=========> " + entry.getKey() + " = " + entry.getValue(), null);
+            }
+        }
     }
 
     /**

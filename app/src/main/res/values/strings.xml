@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">android-apkbox</string>
+    <string name="apkbox_process">com.apkbox</string>
 </resources>

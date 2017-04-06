@@ -1,12 +1,11 @@
 package com.liangmayong.apkbox.core.context;
 
 import android.app.Application;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
-import android.os.Bundle;
-import android.util.Log;
 
 import com.liangmayong.apkbox.core.classloader.ApkClassLoader;
 import com.liangmayong.apkbox.core.constant.ApkConstant;
@@ -94,4 +93,13 @@ public final class ApkContext extends Application {
         }
         return false;
     }
+
+    @Override
+    public ComponentName startService(Intent service) {
+        if (apkPath != null && !"".equals(apkPath)) {
+            service.putExtra(ApkConstant.EXTRA_APK_PATH, service);
+        }
+        return super.startService(service);
+    }
+
 }

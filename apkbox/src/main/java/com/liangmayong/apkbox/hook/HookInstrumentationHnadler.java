@@ -19,7 +19,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 
 import com.liangmayong.apkbox.hook.activity.HookActivity_Intent;
-import com.liangmayong.apkbox.hook.method.HookActivityLifeCycle;
+import com.liangmayong.apkbox.hook.activity.HookActivity_LifeCycle;
 import com.liangmayong.apkbox.reflect.ApkMethod;
 import com.liangmayong.apkbox.utils.ApkLogger;
 
@@ -231,7 +231,7 @@ public class HookInstrumentationHnadler extends Instrumentation {
 
     @Override
     public Activity newActivity(ClassLoader cl, String className, Intent intent) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
-        Activity activity = HookActivityLifeCycle.onNewActivity(cl, className, intent);
+        Activity activity = HookActivity_LifeCycle.onNewActivity(cl, className, intent);
         if (activity != null) {
             return activity;
         }
@@ -240,46 +240,46 @@ public class HookInstrumentationHnadler extends Instrumentation {
 
     @Override
     public void callActivityOnCreate(Activity activity, Bundle icicle) {
-        HookActivityLifeCycle.onCreate(activity, icicle);
+        HookActivity_LifeCycle.onCreate(activity, icicle);
         mInstrumentation.callActivityOnCreate(activity, icicle);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void callActivityOnCreate(Activity activity, Bundle icicle, PersistableBundle persistentState) {
-        HookActivityLifeCycle.onCreate(activity, icicle, persistentState);
+        HookActivity_LifeCycle.onCreate(activity, icicle, persistentState);
         mInstrumentation.callActivityOnCreate(activity, icicle, persistentState);
     }
 
     @Override
     public void callActivityOnDestroy(Activity activity) {
-        HookActivityLifeCycle.onDestroy(activity);
+        HookActivity_LifeCycle.onDestroy(activity);
         mInstrumentation.callActivityOnDestroy(activity);
     }
 
     @Override
     public void callActivityOnRestoreInstanceState(Activity activity, Bundle savedInstanceState) {
-        HookActivityLifeCycle.onRestoreInstanceState(activity, savedInstanceState);
+        HookActivity_LifeCycle.onRestoreInstanceState(activity, savedInstanceState);
         mInstrumentation.callActivityOnRestoreInstanceState(activity, savedInstanceState);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void callActivityOnRestoreInstanceState(Activity activity, Bundle savedInstanceState, PersistableBundle persistentState) {
-        HookActivityLifeCycle.onRestoreInstanceState(activity, savedInstanceState, persistentState);
+        HookActivity_LifeCycle.onRestoreInstanceState(activity, savedInstanceState, persistentState);
         mInstrumentation.callActivityOnRestoreInstanceState(activity, savedInstanceState, persistentState);
     }
 
     @Override
     public void callActivityOnPostCreate(Activity activity, Bundle icicle) {
-        HookActivityLifeCycle.onPostCreate(activity, icicle);
+        HookActivity_LifeCycle.onPostCreate(activity, icicle);
         mInstrumentation.callActivityOnPostCreate(activity, icicle);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void callActivityOnPostCreate(Activity activity, Bundle icicle, PersistableBundle persistentState) {
-        HookActivityLifeCycle.onPostCreate(activity, icicle, persistentState);
+        HookActivity_LifeCycle.onPostCreate(activity, icicle, persistentState);
         mInstrumentation.callActivityOnPostCreate(activity, icicle, persistentState);
     }
 
@@ -290,44 +290,44 @@ public class HookInstrumentationHnadler extends Instrumentation {
 
     @Override
     public void callActivityOnStart(Activity activity) {
-        HookActivityLifeCycle.onStart(activity);
+        HookActivity_LifeCycle.onStart(activity);
         mInstrumentation.callActivityOnStart(activity);
     }
 
     @Override
     public void callActivityOnRestart(Activity activity) {
-        HookActivityLifeCycle.onRestart(activity);
+        HookActivity_LifeCycle.onRestart(activity);
         mInstrumentation.callActivityOnRestart(activity);
     }
 
     @Override
     public void callActivityOnResume(Activity activity) {
-        HookActivityLifeCycle.onResume(activity);
+        HookActivity_LifeCycle.onResume(activity);
         mInstrumentation.callActivityOnResume(activity);
     }
 
     @Override
     public void callActivityOnStop(Activity activity) {
-        HookActivityLifeCycle.onStop(activity);
+        HookActivity_LifeCycle.onStop(activity);
         mInstrumentation.callActivityOnStop(activity);
     }
 
     @Override
     public void callActivityOnSaveInstanceState(Activity activity, Bundle outState) {
-        HookActivityLifeCycle.onSaveInstanceState(activity, outState);
+        HookActivity_LifeCycle.onSaveInstanceState(activity, outState);
         mInstrumentation.callActivityOnSaveInstanceState(activity, outState);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void callActivityOnSaveInstanceState(Activity activity, Bundle outState, PersistableBundle outPersistentState) {
-        HookActivityLifeCycle.onSaveInstanceState(activity, outState, outPersistentState);
+        HookActivity_LifeCycle.onSaveInstanceState(activity, outState, outPersistentState);
         mInstrumentation.callActivityOnSaveInstanceState(activity, outState, outPersistentState);
     }
 
     @Override
     public void callActivityOnPause(Activity activity) {
-        HookActivityLifeCycle.onPause(activity);
+        HookActivity_LifeCycle.onPause(activity);
         mInstrumentation.callActivityOnPause(activity);
     }
 

@@ -1,4 +1,4 @@
-package com.liangmayong.apkbox.hook.method;
+package com.liangmayong.apkbox.hook.activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -13,9 +13,9 @@ import com.liangmayong.apkbox.hook.activity.HookActivity_OnCreate;
  * Created by LiangMaYong on 2017/4/5.
  */
 
-public class HookActivityLifeCycle {
+public class HookActivity_LifeCycle {
 
-    private HookActivityLifeCycle() {
+    private HookActivity_LifeCycle() {
     }
 
     public static Activity onNewActivity(ClassLoader cl, String className, Intent intent) {

@@ -1,4 +1,4 @@
-package com.liangmayong.apkbox.hook.method;
+package com.liangmayong.apkbox.hook.handle;
 
 import android.content.pm.ActivityInfo;
 
@@ -9,9 +9,9 @@ import java.lang.reflect.Method;
 /**
  * Created by LiangMaYong on 2017/4/5.
  */
-public class HookGetActivityInfo {
+public class HookProxy_GetActivityInfo {
 
-    private HookGetActivityInfo() {
+    private HookProxy_GetActivityInfo() {
     }
 
     public static Object getActivityInfo(Object proxy, Method method, Object[] args) throws Throwable {

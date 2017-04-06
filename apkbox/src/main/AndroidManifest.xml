@@ -6,14 +6,13 @@
 
     <application
         android:allowBackup="true"
-        android:label="@string/app_name"
-        android:supportsRtl="true"
-        >
-
+        android:supportsRtl="true">
         <activity
             android:name="com.liangmayong.apkbox.proxy.ProxyActivity"
-            android:process=":apkbox"/>
-
+            android:process="@string/apkbox_process"/>
+        <service
+            android:name="com.liangmayong.apkbox.proxy.ProxyService"
+            android:process="@string/apkbox_process"/>
     </application>
 
 </manifest>

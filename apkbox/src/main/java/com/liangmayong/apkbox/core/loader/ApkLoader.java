@@ -63,10 +63,13 @@ public class ApkLoader {
                     loaded.setApkIcon(info.loadIcon(pm));
                     loaded.setApkSignture(ApkSignture.getSignture(context, apkPath));
                     loaded.setApkInfo(pkg);
+                    loaded.setApkVersionCode(pkg.versionCode);
+                    loaded.setApkVersionName(pkg.versionName);
                     loaded.setConfigures(ApkConfigure.getConfigure(ApkResources.getAssets(context, apkPath)));
                     loaded.setFilters(ApkManifestParser.getIntentFilter(apkPath));
                     loaded.setApkLauncher(getMainActivityName(loaded, info.packageName));
                     loaded.setApkApplication(createApplication(context, loaded, applicationName));
+                    ApkReceiver.registerReceiver(context, loaded);
                     return loaded;
                 }
             } catch (Exception e) {

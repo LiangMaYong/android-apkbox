@@ -1,6 +1,7 @@
 package com.liangmayong.android_apkbox;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -11,6 +12,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.liangmayong.apkbox.core.ApkLoaded;
+import com.liangmayong.apkbox.core.constant.ApkConstant;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -20,7 +22,7 @@ import java.io.OutputStream;
 public class MainActivity extends AppCompatActivity {
 
     private ApkLoaded loaded = null;
-    private String appName = "base3.apk";
+    private String appName = "apkplugin.apk";
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -42,6 +44,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         _initView();
         install();
+        Intent intent = new Intent(this, SubService.class);
+        intent.putExtra(ApkConstant.EXTRA_APK_PATH, "APK");
+        startService(intent);
+
+        stopService(new Intent(this, SubService.class));
     }
 
 
