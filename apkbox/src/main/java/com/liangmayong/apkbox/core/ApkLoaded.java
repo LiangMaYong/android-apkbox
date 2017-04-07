@@ -18,6 +18,7 @@ import com.liangmayong.apkbox.core.classloader.ApkClassLoader;
 import com.liangmayong.apkbox.core.constant.ApkConstant;
 import com.liangmayong.apkbox.core.context.ApkContext;
 import com.liangmayong.apkbox.core.loader.ApkLoader;
+import com.liangmayong.apkbox.core.resources.ApkModel;
 import com.liangmayong.apkbox.core.resources.ApkResources;
 
 import java.util.HashMap;
@@ -199,7 +200,7 @@ public class ApkLoaded {
     }
 
     /////////////////////////////////////////////////////////////////////
-    //////// Hook Class and Res
+    //////// Hook Class and Res and Model
     /////////////////////////////////////////////////////////////////////
 
     public ClassLoader getClassLoader() {
@@ -216,6 +217,14 @@ public class ApkLoaded {
 
     public Context getContext(Context baseContext) {
         return ApkContext.get(baseContext, getApkPath());
+    }
+
+    public <T> T getModel(Class<T> clazz, String className) {
+        if (clazz != null) {
+            ApkModel<T> builder = new ApkModel<T>(clazz);
+            return builder.getModel(getApkPath(), className);
+        }
+        return null;
     }
 
 

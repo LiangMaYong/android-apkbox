@@ -96,10 +96,18 @@ public final class ApkContext extends Application {
 
     @Override
     public ComponentName startService(Intent service) {
-        if (apkPath != null && !"".equals(apkPath)) {
-            service.putExtra(ApkConstant.EXTRA_APK_PATH, service);
+        if (isApkLoaded()) {
+            service.putExtra(ApkConstant.EXTRA_APK_PATH, apkPath);
         }
         return super.startService(service);
+    }
+
+    @Override
+    public boolean stopService(Intent name) {
+        if (isApkLoaded()) {
+            name.putExtra(ApkConstant.EXTRA_APK_PATH, apkPath);
+        }
+        return super.stopService(name);
     }
 
 }

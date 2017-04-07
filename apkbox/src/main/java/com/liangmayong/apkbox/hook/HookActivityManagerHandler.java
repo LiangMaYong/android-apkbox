@@ -3,9 +3,10 @@ package com.liangmayong.apkbox.hook;
 import android.annotation.TargetApi;
 import android.os.Build;
 
-import com.liangmayong.apkbox.hook.handle.HookProxy_StartActivity;
-import com.liangmayong.apkbox.hook.handle.HookProxy_StartService;
-import com.liangmayong.apkbox.hook.handle.HookProxy_StopService;
+import com.liangmayong.apkbox.hook.proxy.HookProxy_StartActivity;
+import com.liangmayong.apkbox.hook.proxy.HookProxy_StartService;
+import com.liangmayong.apkbox.hook.proxy.HookProxy_StopService;
+import com.liangmayong.apkbox.hook.proxy.HookProxy_onTransact;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -26,10 +27,12 @@ public class HookActivityManagerHandler implements InvocationHandler {
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         if ("startActivity".equals(method.getName())) {
             return HookProxy_StartActivity.invoke(mBase, method, args);
-        } else if ("startService".equals(method.getName()) || "bindService".equals(method.getName())) {
+        } else if ("startService".equals(method.getName())) {
             return HookProxy_StartService.invoke(mBase, method, args);
         } else if ("stopService".equals(method.getName())) {
             return HookProxy_StopService.invoke(mBase, method, args);
+        } else if ("serviceDoneExecuting".equals(method.getName())) {
+            return HookProxy_onTransact.invoke(mBase, method, args);
         }
         return method.invoke(mBase, args);
     }

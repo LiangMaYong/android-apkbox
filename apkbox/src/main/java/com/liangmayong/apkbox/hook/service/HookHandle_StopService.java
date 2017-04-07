@@ -1,5 +1,6 @@
-package com.liangmayong.apkbox.hook.handle;
+package com.liangmayong.apkbox.hook.service;
 
+import android.os.Handler;
 import android.os.Message;
 
 import com.liangmayong.apkbox.utils.ApkLogger;
@@ -12,8 +13,9 @@ public class HookHandle_StopService {
     private HookHandle_StopService() {
     }
 
-    public static void handleStopService(Message msg) {
+    public static void handleStopService(Handler hnadler, Message msg) {
         ApkLogger.get().debug("hook handleStopService", null);
     }
+
 
 }

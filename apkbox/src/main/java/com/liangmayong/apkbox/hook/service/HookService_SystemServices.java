@@ -1,4 +1,4 @@
-package com.liangmayong.apkbox.hook.handle;
+package com.liangmayong.apkbox.hook.service;
 
 import android.app.Service;
 
@@ -10,9 +10,9 @@ import java.util.Map;
 /**
  * Created by LiangMaYong on 2017/4/5.
  */
-public class HookActivity_Service {
+public class HookService_SystemServices {
 
-    private HookActivity_Service() {
+    private HookService_SystemServices() {
     }
 
     public static void putService(Object token, Service service) {
@@ -28,6 +28,13 @@ public class HookActivity_Service {
             return (Service) map.get(token);
         }
         return null;
+    }
+
+    public static void removeService(Object token) {
+        Map map = getServices();
+        if (map != null) {
+            map.remove(token);
+        }
     }
 
     public static void clearService() {

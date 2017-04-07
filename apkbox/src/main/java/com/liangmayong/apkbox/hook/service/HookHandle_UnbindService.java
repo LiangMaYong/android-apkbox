@@ -1,5 +1,6 @@
-package com.liangmayong.apkbox.hook.handle;
+package com.liangmayong.apkbox.hook.service;
 
+import android.os.Handler;
 import android.os.Message;
 
 import com.liangmayong.apkbox.utils.ApkLogger;
@@ -12,7 +13,7 @@ public class HookHandle_UnbindService {
     private HookHandle_UnbindService() {
     }
 
-    public static void handleUnbindService(Message msg) {
+    public static void handleUnbindService(Handler hnadler, Message msg) {
         ApkLogger.get().debug("hook handleUnbindService", null);
     }
 

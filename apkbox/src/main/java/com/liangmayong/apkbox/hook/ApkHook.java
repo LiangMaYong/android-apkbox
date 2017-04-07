@@ -127,7 +127,7 @@ public class ApkHook {
                 if (activityThread != null) {
                     Instrumentation rawInstrumentation = (Instrumentation) ApkReflect.getField(activityThread.getClass(),
                             activityThread, "mInstrumentation");
-                    HookInstrumentationHnadler instrumentation = new HookInstrumentationHnadler(rawInstrumentation);
+                    HookActivityInstrumentationHnadler instrumentation = new HookActivityInstrumentationHnadler(rawInstrumentation);
                     ApkReflect.setField(activityThread.getClass(), activityThread, "mInstrumentation", instrumentation);
                 }
             }

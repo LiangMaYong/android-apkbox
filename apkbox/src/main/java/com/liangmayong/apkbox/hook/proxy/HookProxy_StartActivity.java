@@ -1,4 +1,4 @@
-package com.liangmayong.apkbox.hook.handle;
+package com.liangmayong.apkbox.hook.proxy;
 
 import android.content.Intent;
 import android.util.Pair;
@@ -17,24 +17,23 @@ public class HookProxy_StartActivity {
     }
 
     public static Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        ApkLogger.get().debug("hook startActivity", null);
-        Pair<Pair<Integer, Intent>, Pair<Integer, String>> pairPairPair = pairArgs(args);
+        ApkLogger.get().debug("hook " + method.getName(), null);
+        Pair<Pair<Integer, Intent>, Pair<Integer, String>> pairPairPair = getArgsPair(args);
         if (pairPairPair.first.first != -1 && pairPairPair.second.first != -1) {
             int intentIndex = pairPairPair.first.first;
-            Intent raw = pairPairPair.first.second;
-            String targetPackage = pairPairPair.second.second;
-            args[intentIndex] = HookActivity_Component.modify(raw, targetPackage);
+            Intent newIntent = HookActivity_Component.modify(pairPairPair.first.second, pairPairPair.second.second);
+            args[intentIndex] = newIntent;
         }
         return method.invoke(proxy, args);
     }
 
     /**
-     * foundFirstIntentOfArgs
+     * getArgsPair
      *
      * @param args args
      * @return pairs
      */
-    private static Pair<Pair<Integer, Intent>, Pair<Integer, String>> pairArgs(Object... args) {
+    private static Pair<Pair<Integer, Intent>, Pair<Integer, String>> getArgsPair(Object... args) {
         int intentIndex = -1;
         Intent intent = null;
         int packageIndex = -1;
@@ -43,11 +42,12 @@ public class HookProxy_StartActivity {
             if (packageIndex == -1 && args[i] instanceof String) {
                 packageIndex = i;
                 packageName = (String) args[i];
-                break;
             }
             if (intentIndex == -1 && args[i] instanceof Intent) {
                 intentIndex = i;
                 intent = (Intent) args[i];
+            }
+            if (packageIndex != -1 && intentIndex != -1) {
                 break;
             }
         }

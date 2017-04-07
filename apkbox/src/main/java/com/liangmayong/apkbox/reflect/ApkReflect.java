@@ -119,11 +119,16 @@ public final class ApkReflect {
     public static void print(Object object) {
         if (object != null) {
             Map<String, Object> fields = getFields(object.getClass(), object);
-            ApkLogger.get().debug("print " + object + "", null);
+            ApkLogger.get().debug("==================================================", null);
+            ApkLogger.get().debug("---------> print " + object.getClass().getName() + "(" + object + ")", null);
             for (Map.Entry<String, Object> entry : fields.entrySet()) {
-                ApkLogger.get().debug("=========> " + entry.getKey() + " = " + entry.getValue(), null);
+                ApkLogger.get().debug("---------> " + entry.getKey() + " = " + entry.getValue(), null);
             }
+        } else {
+            ApkLogger.get().debug("==================================================", null);
+            ApkLogger.get().debug("---------> print null", null);
         }
+        ApkLogger.get().debug("==================================================", null);
     }
 
     /**

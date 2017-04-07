@@ -25,7 +25,7 @@ public class ApkActivityModifier {
     private ApkActivityModifier() {
     }
 
-    public static void modifyActivity(Activity target, String apkPath) {
+    public static void modify(Activity target, String apkPath) {
         ApkLoaded loaded = ApkLoaded.get(target, apkPath);
         if (loaded != null) {
             modifyApplication(target, loaded);

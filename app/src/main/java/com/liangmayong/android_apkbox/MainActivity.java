@@ -1,7 +1,6 @@
 package com.liangmayong.android_apkbox;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -13,7 +12,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.liangmayong.apkbox.core.ApkLoaded;
-import com.liangmayong.apkbox.core.constant.ApkConstant;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -44,15 +42,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         _initView();
         install();
-        Intent intent = new Intent(this, SubService.class);
-        intent.putExtra(ApkConstant.EXTRA_APK_PATH, "APK");
-        startService(intent);
-
-        stopService(new Intent(this, SubService.class));
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (loaded != null){
+                if (loaded != null) {
                     loaded.launch(MainActivity.this, null);
                 }
             }

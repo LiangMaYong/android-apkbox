@@ -2,7 +2,6 @@ package com.liangmayong.apkbox.hook.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.liangmayong.apkbox.core.constant.ApkConstant;
 import com.liangmayong.apkbox.core.resources.ApkExtras;
@@ -22,7 +21,7 @@ public class HookActivity_OnCreate {
         ApkLayoutInflaterModifier.modify();
         if (target.getIntent().hasExtra(ApkConstant.EXTRA_APK_PATH)) {
             String apkPath = target.getIntent().getStringExtra(ApkConstant.EXTRA_APK_PATH);
-            ApkActivityModifier.modifyActivity(target, apkPath);
+            ApkActivityModifier.modify(target, apkPath);
         }
         if (target.getIntent().hasExtra(ApkConstant.EXTRA_APK_EXTRAS)) {
             String extras_id = target.getIntent().getStringExtra(ApkConstant.EXTRA_APK_EXTRAS);

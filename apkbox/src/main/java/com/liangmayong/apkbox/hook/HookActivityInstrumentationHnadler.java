@@ -27,11 +27,11 @@ import com.liangmayong.apkbox.utils.ApkLogger;
 /**
  * Created by LiangMaYong on 2017/4/5.
  */
-public class HookInstrumentationHnadler extends Instrumentation {
+public class HookActivityInstrumentationHnadler extends Instrumentation {
 
     private Instrumentation mInstrumentation = null;
 
-    public HookInstrumentationHnadler(Instrumentation mInstrumentation) {
+    public HookActivityInstrumentationHnadler(Instrumentation mInstrumentation) {
         this.mInstrumentation = mInstrumentation;
     }
 
