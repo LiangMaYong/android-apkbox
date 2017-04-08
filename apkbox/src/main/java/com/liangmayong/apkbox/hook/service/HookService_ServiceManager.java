@@ -4,12 +4,14 @@ import android.app.Application;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.IBinder;
 
 import com.liangmayong.apkbox.core.ApkLoaded;
 import com.liangmayong.apkbox.core.constant.ApkConstant;
 import com.liangmayong.apkbox.hook.component.HookComponent_Service;
 import com.liangmayong.apkbox.reflect.ApkMethod;
+import com.liangmayong.apkbox.reflect.ApkReflect;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -142,6 +144,8 @@ public class HookService_ServiceManager {
             ApkMethod attachBaseContextMethod = new ApkMethod(Service.class, rawService, "attachBaseContext", Context.class);
             attachBaseContextMethod.invoke(ctx);
 
+            modifyService(application, serviceName, realToken, ctx.getApplicationInfo().targetSdkVersion < Build.VERSION_CODES.ECLAIR, rawService);
+
             rawService.onCreate();
             return rawService;
         } catch (Exception e) {
@@ -149,4 +153,23 @@ public class HookService_ServiceManager {
         return proxyService;
     }
 
+    private static void modifyService(Application application, String serviceName, Object token, boolean compatibility, Service service) {
+        try {
+            ApkReflect.setField(Service.class, service, "mClassName", serviceName);
+            ApkReflect.setField(Service.class, service, "mToken", token);
+            ApkReflect.setField(Service.class, service, "mApplication", application);
+            ApkReflect.setField(Service.class, service, "mStartCompatibility", compatibility);
+
+            Class<?> activityThreadClass = Class.forName("android.app.ActivityThread");
+            Method currentActivityThreadMethod = activityThreadClass.getDeclaredMethod("currentActivityThread");
+            Object currentActivityThread = currentActivityThreadMethod.invoke(null);
+            ApkReflect.setField(Service.class, service, "mThread", currentActivityThread);
+
+            Class<?> activityManagerNativeClass = Class.forName("android.app.ActivityManagerNative");
+            Method getDefaultMethod = activityManagerNativeClass.getDeclaredMethod("getDefault");
+            Object activityManager = getDefaultMethod.invoke(null);
+            ApkReflect.setField(Service.class, service, "mActivityManager", activityManager);
+        } catch (Exception e) {
+        }
+    }
 }

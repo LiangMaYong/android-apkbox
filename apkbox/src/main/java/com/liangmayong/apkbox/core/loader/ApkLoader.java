@@ -7,7 +7,9 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.util.Log;
 
+import com.liangmayong.apkbox.R;
 import com.liangmayong.apkbox.core.ApkLoaded;
 import com.liangmayong.apkbox.core.resources.ApkNative;
 import com.liangmayong.apkbox.core.resources.ApkResources;
@@ -18,6 +20,8 @@ import com.liangmayong.apkbox.utils.ApkLogger;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -66,13 +70,15 @@ public class ApkLoader {
                     loaded.setApkInfo(pkg);
                     loaded.setApkVersionCode(pkg.versionCode);
                     loaded.setApkVersionName(pkg.versionName);
+                    loaded.setApkPackageManager(pm);
                     loaded.setConfigures(ApkConfigure.getConfigure(ApkResources.getAssets(context, apkPath)));
                     loaded.setFilters(ApkManifestParser.getIntentFilter(apkPath));
                     loaded.setApkLauncher(getMainActivityName(loaded, info.packageName));
                     ApkReceiver.unregisterReceiver(loaded);
                     loaded.setApkApplication(createApplication(context, loaded, applicationName));
-                    ApkReceiver.registerReceiver(context, loaded);
+                    ApkReceiver.registerReceiver(context, loaded, parserPermissions(context));
                     ApkLogger.get().debug("Load apk success :" + loaded, null);
+                    parserPermissions(context);
                     return loaded;
                 } else {
                     ApkLogger.get().debug("Load apk fail : package info is null", null);
@@ -140,17 +146,37 @@ public class ApkLoader {
         Application application = null;
         Context ctx = loaded.getContext(context);
         try {
-            application = (Application) loaded.getClassLoader().loadClass(applicationName)
-                    .newInstance();
-            ApkMethod method = new ApkMethod(Application.class, application, "attach", Context.class);
-            method.invoke(ctx);
+            if (!ApkProcess.validateProcessName(context, context.getString(R.string.apkbox_process))) {
+                application = (Application) ctx;
+            } else {
+                application = (Application) loaded.getClassLoader().loadClass(applicationName)
+                        .newInstance();
+                ApkMethod method = new ApkMethod(Application.class, application, "attach", Context.class);
+                method.invoke(ctx);
 
-            ApkReflect.setField(Application.class, application, "mBase", ctx);
-            application.onCreate();
+                ApkReflect.setField(Application.class, application, "mBase", ctx);
+                application.onCreate();
+            }
         } catch (Exception e) {
             application = (Application) ctx;
         }
         ApkLogger.get().debug("make Application : " + application, null);
         return application;
+    }
+
+    private static List<String> parserPermissions(Context context) {
+        List<String> permissions = new ArrayList<>();
+        try {
+            PackageManager pm = context.getPackageManager();
+            PackageInfo pkgInfo = pm.getPackageInfo(context.getPackageName(), PackageManager.GET_PERMISSIONS);
+            String[] perms = pkgInfo.requestedPermissions;
+            if (perms != null) {
+                for (String permName : perms) {
+                    permissions.add(permName);
+                }
+            }
+        } catch (Exception e) {
+        }
+        return permissions;
     }
 }

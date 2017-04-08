@@ -10,6 +10,7 @@ import com.liangmayong.apkbox.reflect.ApkReflect;
 
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -49,7 +50,7 @@ public final class ApkReceiver {
      * @param context context
      * @param loaded  loaded
      */
-    public static void registerReceiver(Context context, ApkLoaded loaded) {
+    public static void registerReceiver(Context context, ApkLoaded loaded, List<String> permissions) {
         if (!ApkProcess.validateProcessName(context, context.getString(R.string.apkbox_process))) {
             return;
         }
@@ -62,14 +63,13 @@ public final class ApkReceiver {
             LinkedList<BroadcastReceiver> receivers = new LinkedList<BroadcastReceiver>();
             for (Map.Entry<String, IntentFilter> entry : filters.entrySet()) {
                 String clazzName = ApkLoader.parserClassName(loaded.getApkInfo().packageName, entry.getKey());
-                Class<?> clazz = null;
                 try {
-                    clazz = loaded.getClassLoader().loadClass(clazzName);
+                    Class<?> clazz = loaded.getClassLoader().loadClass(clazzName);
                     if (clazz != null && ApkReflect.isGeneric(clazz, BroadcastReceiver.class.getName())) {
                         try {
                             BroadcastReceiver broadcastReceiver = (BroadcastReceiver) clazz.newInstance();
-                            receivers.add(broadcastReceiver);
                             context.registerReceiver(broadcastReceiver, entry.getValue());
+                            receivers.add(broadcastReceiver);
                         } catch (Exception e) {
                         }
                     }

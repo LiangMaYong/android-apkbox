@@ -77,6 +77,11 @@ public final class ApkContext extends Application {
     }
 
     @Override
+    public String getPackageName() {
+        return getBaseContext().getPackageName();
+    }
+
+    @Override
     public Resources.Theme getTheme() {
         if (isApkLoaded()) {
             if (mTheme == null) {
@@ -119,4 +124,15 @@ public final class ApkContext extends Application {
         return super.bindService(service, conn, flags);
     }
 
+    @Override
+    public void sendBroadcast(Intent intent, String receiverPermission) {
+        receiverPermission = getPackageName() + ".permission.APK_RECEIVE";
+        super.sendBroadcast(intent, receiverPermission);
+    }
+
+    @Override
+    public void sendBroadcast(Intent intent) {
+        String receiverPermission = getPackageName() + ".permission.APK_RECEIVE";
+        super.sendBroadcast(intent, receiverPermission);
+    }
 }

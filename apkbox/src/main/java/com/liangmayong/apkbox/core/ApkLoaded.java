@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
@@ -70,6 +71,7 @@ public class ApkLoaded {
     private String apkSignture = "";
     private int apkVersionCode = 1;
     private String apkVersionName = "";
+    private PackageManager apkPackageManager = null;
     private final Map<String, String> configures = new HashMap<>();
     private final Map<String, IntentFilter> filters = new HashMap<>();
 
@@ -143,6 +145,14 @@ public class ApkLoaded {
 
     public void setApkVersionName(String apkVersionName) {
         this.apkVersionName = apkVersionName;
+    }
+
+    public PackageManager getApkPackageManager() {
+        return apkPackageManager;
+    }
+
+    public void setApkPackageManager(PackageManager apkPackageManager) {
+        this.apkPackageManager = apkPackageManager;
     }
 
     public Map<String, String> getConfigures() {
@@ -262,7 +272,6 @@ public class ApkLoaded {
                 intent.putExtras(bundle);
             }
             intent.putExtra(ApkConstant.EXTRA_APK_PATH, getApkPath());
-            Log.e("TAG-LAUNCH", intent + "");
             context.startActivity(intent);
             return true;
         } catch (Exception e) {
@@ -298,6 +307,7 @@ public class ApkLoaded {
                 ", apkSignture='" + apkSignture + '\'' +
                 ", apkVersionCode=" + apkVersionCode +
                 ", apkVersionName='" + apkVersionName + '\'' +
+                ", apkPackageManager=" + apkPackageManager +
                 ", configures=" + configures +
                 ", filters=" + filters +
                 '}';
