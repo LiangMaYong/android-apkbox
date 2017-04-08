@@ -18,6 +18,7 @@ public class HookHandle_ServiceArgs {
     }
 
     public static void handleServiceArgs(Handler handler, Message msg) {
+        handler.handleMessage(msg);
         handleRealServiceArgs(msg);
     }
 
@@ -30,12 +31,10 @@ public class HookHandle_ServiceArgs {
             Intent raw = (Intent) intent.get(obj);
             if (raw.hasExtra(ApkConstant.EXTRA_APK_TARGET_INTENT)) {
                 Intent target = raw.getParcelableExtra(ApkConstant.EXTRA_APK_TARGET_INTENT);
-                intent.set(obj, target);
                 Field token = obj.getClass().getDeclaredField("token");
                 token.setAccessible(true);
                 Object proxyToken = token.get(obj);
-                Object realToken = HookService_ServiceManager.createRealService(proxyToken, target);
-                token.set(obj, realToken);
+                HookService_ServiceManager.createRealService(proxyToken, target);
             }
         } catch (Exception e) {
         }

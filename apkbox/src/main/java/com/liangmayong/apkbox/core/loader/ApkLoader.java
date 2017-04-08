@@ -7,9 +7,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.util.Log;
 
-import com.liangmayong.apkbox.R;
 import com.liangmayong.apkbox.core.ApkLoaded;
 import com.liangmayong.apkbox.core.resources.ApkNative;
 import com.liangmayong.apkbox.core.resources.ApkResources;
@@ -146,9 +144,7 @@ public class ApkLoader {
         Application application = null;
         Context ctx = loaded.getContext(context);
         try {
-            if (!ApkProcess.validateProcessName(context, context.getString(R.string.apkbox_process))) {
-                application = (Application) ctx;
-            } else {
+            if (ApkProcess.validateApkProcessName(context)) {
                 application = (Application) loaded.getClassLoader().loadClass(applicationName)
                         .newInstance();
                 ApkMethod method = new ApkMethod(Application.class, application, "attach", Context.class);
@@ -156,6 +152,8 @@ public class ApkLoader {
 
                 ApkReflect.setField(Application.class, application, "mBase", ctx);
                 application.onCreate();
+            } else {
+                application = (Application) ctx;
             }
         } catch (Exception e) {
             application = (Application) ctx;

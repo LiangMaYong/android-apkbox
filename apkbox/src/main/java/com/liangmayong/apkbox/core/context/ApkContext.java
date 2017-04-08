@@ -8,6 +8,7 @@ import android.content.ServiceConnection;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 
+import com.liangmayong.apkbox.core.ApkLoaded;
 import com.liangmayong.apkbox.core.classloader.ApkClassLoader;
 import com.liangmayong.apkbox.core.constant.ApkConstant;
 import com.liangmayong.apkbox.core.resources.ApkResources;
@@ -127,12 +128,6 @@ public final class ApkContext extends Application {
     @Override
     public void sendBroadcast(Intent intent, String receiverPermission) {
         receiverPermission = getPackageName() + ".permission.APK_RECEIVE";
-        super.sendBroadcast(intent, receiverPermission);
-    }
-
-    @Override
-    public void sendBroadcast(Intent intent) {
-        String receiverPermission = getPackageName() + ".permission.APK_RECEIVE";
         super.sendBroadcast(intent, receiverPermission);
     }
 }

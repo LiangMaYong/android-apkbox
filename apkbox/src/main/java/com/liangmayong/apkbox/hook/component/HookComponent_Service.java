@@ -16,6 +16,7 @@ import com.liangmayong.apkbox.proxy.service.Proxy6Service;
 import com.liangmayong.apkbox.proxy.service.Proxy7Service;
 import com.liangmayong.apkbox.proxy.service.Proxy8Service;
 import com.liangmayong.apkbox.proxy.service.Proxy9Service;
+import com.liangmayong.apkbox.utils.ApkLogger;
 
 import java.util.HashMap;
 import java.util.Map;

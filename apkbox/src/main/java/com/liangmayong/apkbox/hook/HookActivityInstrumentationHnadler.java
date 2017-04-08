@@ -246,7 +246,6 @@ public class HookActivityInstrumentationHnadler extends Instrumentation {
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    @Override
     public void callActivityOnCreate(Activity activity, Bundle icicle, PersistableBundle persistentState) {
         HookActivity_LifeCycle.onCreate(activity, icicle, persistentState);
         mInstrumentation.callActivityOnCreate(activity, icicle, persistentState);
@@ -265,7 +264,6 @@ public class HookActivityInstrumentationHnadler extends Instrumentation {
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    @Override
     public void callActivityOnRestoreInstanceState(Activity activity, Bundle savedInstanceState, PersistableBundle persistentState) {
         HookActivity_LifeCycle.onRestoreInstanceState(activity, savedInstanceState, persistentState);
         mInstrumentation.callActivityOnRestoreInstanceState(activity, savedInstanceState, persistentState);
@@ -278,7 +276,6 @@ public class HookActivityInstrumentationHnadler extends Instrumentation {
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    @Override
     public void callActivityOnPostCreate(Activity activity, Bundle icicle, PersistableBundle persistentState) {
         HookActivity_LifeCycle.onPostCreate(activity, icicle, persistentState);
         mInstrumentation.callActivityOnPostCreate(activity, icicle, persistentState);
@@ -320,7 +317,6 @@ public class HookActivityInstrumentationHnadler extends Instrumentation {
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    @Override
     public void callActivityOnSaveInstanceState(Activity activity, Bundle outState, PersistableBundle outPersistentState) {
         HookActivity_LifeCycle.onSaveInstanceState(activity, outState, outPersistentState);
         mInstrumentation.callActivityOnSaveInstanceState(activity, outState, outPersistentState);
@@ -358,7 +354,6 @@ public class HookActivityInstrumentationHnadler extends Instrumentation {
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
-    @Override
     public UiAutomation getUiAutomation() {
         return mInstrumentation.getUiAutomation();
     }

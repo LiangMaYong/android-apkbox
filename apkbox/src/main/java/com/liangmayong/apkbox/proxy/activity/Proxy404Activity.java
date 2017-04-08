@@ -12,7 +12,7 @@ public class Proxy404Activity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Toast.makeText(this, "ProxyActivity", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getClass().getSimpleName(), Toast.LENGTH_SHORT).show();
     }
 
 }

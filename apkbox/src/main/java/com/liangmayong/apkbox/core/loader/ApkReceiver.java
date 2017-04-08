@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
 
-import com.liangmayong.apkbox.R;
 import com.liangmayong.apkbox.core.ApkLoaded;
 import com.liangmayong.apkbox.reflect.ApkReflect;
 
@@ -51,7 +50,7 @@ public final class ApkReceiver {
      * @param loaded  loaded
      */
     public static void registerReceiver(Context context, ApkLoaded loaded, List<String> permissions) {
-        if (!ApkProcess.validateProcessName(context, context.getString(R.string.apkbox_process))) {
+        if (!ApkProcess.validateApkProcessName(context)) {
             return;
         }
         String key = loaded.getApkPath();
@@ -67,8 +66,18 @@ public final class ApkReceiver {
                     Class<?> clazz = loaded.getClassLoader().loadClass(clazzName);
                     if (clazz != null && ApkReflect.isGeneric(clazz, BroadcastReceiver.class.getName())) {
                         try {
+                            IntentFilter intentFilter = new IntentFilter();
+                            IntentFilter raw = entry.getValue();
+                            int count = raw.countActions();
+                            for (int i = 0; i < count; i++) {
+                                String action = raw.getAction(i);
+                                if (action.contains(loaded.getApkInfo().packageName)) {
+                                    action = action.replaceAll(loaded.getApkInfo().packageName, context.getPackageName());
+                                }
+                                intentFilter.addAction(action);
+                            }
                             BroadcastReceiver broadcastReceiver = (BroadcastReceiver) clazz.newInstance();
-                            context.registerReceiver(broadcastReceiver, entry.getValue());
+                            context.registerReceiver(broadcastReceiver, intentFilter);
                             receivers.add(broadcastReceiver);
                         } catch (Exception e) {
                         }

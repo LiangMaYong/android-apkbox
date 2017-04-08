@@ -9,6 +9,7 @@ import android.os.IBinder;
 
 import com.liangmayong.apkbox.core.ApkLoaded;
 import com.liangmayong.apkbox.core.constant.ApkConstant;
+import com.liangmayong.apkbox.hook.HookActivityThread;
 import com.liangmayong.apkbox.hook.component.HookComponent_Service;
 import com.liangmayong.apkbox.reflect.ApkMethod;
 import com.liangmayong.apkbox.reflect.ApkReflect;
@@ -49,7 +50,7 @@ public class HookService_ServiceManager {
                     }
                     Object realToken = token;
                     Service rawService = handleCreateService(realToken, proxyService, apkPath, className);
-                    HookService_SystemServices.putService(realToken, rawService);
+//                    HookService_SystemServices.putService(realToken, rawService);
                     mRealServices.put(key, rawService);
                     mServiceTokens.put(key, realToken);
                     return realToken;
@@ -72,18 +73,15 @@ public class HookService_ServiceManager {
 
 
     public static void addStopService(Intent intent) {
-        if (intent.hasExtra(ApkConstant.EXTRA_APK_PATH)) {
-            String key = HookComponent_Service.getKey(intent);
-            if (mRealServices.containsKey(key)) {
-                Object stoken = mServiceTokens.get(key);
-                if (mStopServices.containsKey(stoken)) {
-                    mStopServices.get(stoken).add(key);
-                } else {
-                    ArrayList<String> stops = new ArrayList<String>();
-                    stops.add(key);
-                    mStopServices.put(stoken, stops);
-                }
-                resetProxyService(stoken);
+        String key = HookComponent_Service.getKey(intent);
+        if (mRealServices.containsKey(key)) {
+            Object stoken = mServiceTokens.get(key);
+            if (mStopServices.containsKey(stoken)) {
+                mStopServices.get(stoken).add(key);
+            } else {
+                ArrayList<String> stops = new ArrayList<String>();
+                stops.add(key);
+                mStopServices.put(stoken, stops);
             }
         }
     }
@@ -91,29 +89,65 @@ public class HookService_ServiceManager {
     private static void doStopService(String key) {
         if (mRealServices.containsKey(key)) {
             Service rawService = mRealServices.get(key);
-            rawService.onDestroy();
+            if (rawService != null) {
+                rawService.onDestroy();
+            }
             mServiceTokens.remove(key);
             mRealServices.remove(key);
         }
     }
 
     public static boolean onUnbindService(Intent intent) {
-        if (intent.hasExtra(ApkConstant.EXTRA_APK_PATH)) {
-            String key = HookComponent_Service.getKey(intent);
-            if (mRealServices.containsKey(key)) {
-                Service rawService = mRealServices.get(key);
+        String key = HookComponent_Service.getKey(intent);
+        if (mRealServices.containsKey(key)) {
+            Service rawService = mRealServices.get(key);
+            if (rawService != null) {
                 return rawService.onUnbind(intent);
             }
         }
         return false;
     }
 
-    public static Object resetProxyService(Object token) {
-        if (token != null) {
-            Service proxyService = mProxyServices.get(token);
-            HookService_SystemServices.putService(token, proxyService);
+    public static IBinder onBindService(Intent intent) {
+        String key = HookComponent_Service.getKey(intent);
+        if (mRealServices.containsKey(key)) {
+            Service rawService = mRealServices.get(key);
+            if (rawService != null) {
+                return rawService.onBind(intent);
+            }
         }
-        return token;
+        return null;
+    }
+
+    public static void onStartService(Intent intent, int startId) {
+        String key = HookComponent_Service.getKey(intent);
+        if (mRealServices.containsKey(key)) {
+            Service rawService = mRealServices.get(key);
+            if (rawService != null) {
+                rawService.onStart(intent, startId);
+            }
+        }
+    }
+
+    public static int onStartCommand(Intent intent, int flags, int startId) {
+        String key = HookComponent_Service.getKey(intent);
+        if (mRealServices.containsKey(key)) {
+            Service rawService = mRealServices.get(key);
+            if (rawService != null) {
+                return rawService.onStartCommand(intent, flags, startId);
+            }
+        }
+        return Service.START_STICKY;
+    }
+
+    public static void onRebindService(Intent intent) {
+        String key = HookComponent_Service.getKey(intent);
+        if (mRealServices.containsKey(key)) {
+            Service rawService = mRealServices.get(key);
+            if (rawService != null) {
+                rawService.onRebind(intent);
+            }
+        }
     }
 
     public static void onLowMemory() {
@@ -130,15 +164,13 @@ public class HookService_ServiceManager {
 
 
             Service rawService = (Service) loaded.getClassLoader().loadClass(serviceName).newInstance();
-            Class<?> activityThreadClass = Class.forName("android.app.ActivityThread");
-            Method currentActivityThreadMethod = activityThreadClass.getDeclaredMethod("currentActivityThread");
-            Object currentActivityThread = currentActivityThreadMethod.invoke(null);
+            Object currentActivityThread = HookActivityThread.getCurrentActivityThread(application);
 
             Class<?> activityManagerNativeClass = Class.forName("android.app.ActivityManagerNative");
             Method getDefaultMethod = activityManagerNativeClass.getDeclaredMethod("getDefault");
             Object activityManager = getDefaultMethod.invoke(null);
 
-            ApkMethod attachMethod = new ApkMethod(Service.class, rawService, "attach", Context.class, activityThreadClass, IBinder.class, Application.class, activityManagerNativeClass);
+            ApkMethod attachMethod = new ApkMethod(Service.class, rawService, "attach", Context.class, currentActivityThread.getClass(), IBinder.class, Application.class, activityManagerNativeClass);
             attachMethod.invoke(ctx, currentActivityThread, realToken, application, activityManager);
 
             ApkMethod attachBaseContextMethod = new ApkMethod(Service.class, rawService, "attachBaseContext", Context.class);
@@ -149,6 +181,7 @@ public class HookService_ServiceManager {
             rawService.onCreate();
             return rawService;
         } catch (Exception e) {
+            e.printStackTrace();
         }
         return proxyService;
     }
@@ -160,9 +193,7 @@ public class HookService_ServiceManager {
             ApkReflect.setField(Service.class, service, "mApplication", application);
             ApkReflect.setField(Service.class, service, "mStartCompatibility", compatibility);
 
-            Class<?> activityThreadClass = Class.forName("android.app.ActivityThread");
-            Method currentActivityThreadMethod = activityThreadClass.getDeclaredMethod("currentActivityThread");
-            Object currentActivityThread = currentActivityThreadMethod.invoke(null);
+            Object currentActivityThread = HookActivityThread.getCurrentActivityThread(application);
             ApkReflect.setField(Service.class, service, "mThread", currentActivityThread);
 
             Class<?> activityManagerNativeClass = Class.forName("android.app.ActivityManagerNative");

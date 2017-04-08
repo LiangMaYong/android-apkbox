@@ -9,7 +9,6 @@ import com.liangmayong.apkbox.reflect.ApkReflect;
 import com.liangmayong.apkbox.utils.ApkLogger;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
 /**
@@ -21,9 +20,10 @@ public class ApkHook {
     }
 
     public static void hook(Application application) {
-        if (application == null){
+        if (application == null) {
             return;
         }
+        ApkLogger.get().debug("hook initialize", null);
         hookInstrumentation(application);
         hookPackageManager(application);
         hookActivityManagerNative(application);
@@ -32,20 +32,18 @@ public class ApkHook {
 
     private static void hookActivityThreadHandler(Application application) {
         try {
-            Class<?> activityThreadClass = Class.forName("android.app.ActivityThread");
-            Field currentActivityThreadField = activityThreadClass.getDeclaredField("sCurrentActivityThread");
-            currentActivityThreadField.setAccessible(true);
-            Object currentActivityThread = currentActivityThreadField.get(null);
-
-            Field mHField = activityThreadClass.getDeclaredField("mH");
-            mHField.setAccessible(true);
-            Handler mH = (Handler) mHField.get(currentActivityThread);
+            Object currentActivityThread = HookActivityThread.getCurrentActivityThread(application);
+            if (currentActivityThread != null) {
+                Field mHField = currentActivityThread.getClass().getDeclaredField("mH");
+                mHField.setAccessible(true);
+                Handler mH = (Handler) mHField.get(currentActivityThread);
 
 
-            Field mCallBackField = Handler.class.getDeclaredField("mCallback");
-            mCallBackField.setAccessible(true);
+                Field mCallBackField = Handler.class.getDeclaredField("mCallback");
+                mCallBackField.setAccessible(true);
 
-            mCallBackField.set(mH, new HookActivityThreadHandlerCallback(mH));
+                mCallBackField.set(mH, new HookActivityThreadHandlerCallback(mH));
+            }
         } catch (Exception e) {
             ApkLogger.get().debug("hookActivityThreadHandler Exception", e);
         }
@@ -59,7 +57,6 @@ public class ApkHook {
     private static void hookActivityManagerNative(Application application) {
         try {
             Class<?> activityManagerNativeClass = Class.forName("android.app.ActivityManagerNative");
-
             Field gDefaultField = activityManagerNativeClass.getDeclaredField("gDefault");
             gDefaultField.setAccessible(true);
 
@@ -88,25 +85,24 @@ public class ApkHook {
      */
     private static void hookPackageManager(Application application) {
         try {
-            Class<?> activityThreadClass = Class.forName("android.app.ActivityThread");
-            Method currentActivityThreadMethod = activityThreadClass.getDeclaredMethod("currentActivityThread");
-            Object currentActivityThread = currentActivityThreadMethod.invoke(null);
+            Object currentActivityThread = HookActivityThread.getCurrentActivityThread(application);
+            if (currentActivityThread != null) {
+                Field sPackageManagerField = currentActivityThread.getClass().getDeclaredField("sPackageManager");
+                sPackageManagerField.setAccessible(true);
+                Object sPackageManager = sPackageManagerField.get(currentActivityThread);
 
-            Field sPackageManagerField = activityThreadClass.getDeclaredField("sPackageManager");
-            sPackageManagerField.setAccessible(true);
-            Object sPackageManager = sPackageManagerField.get(currentActivityThread);
+                Class<?> iPackageManagerInterface = Class.forName("android.content.pm.IPackageManager");
+                Object proxy = Proxy.newProxyInstance(iPackageManagerInterface.getClassLoader(),
+                        new Class<?>[]{iPackageManagerInterface},
+                        new HookPackageManagerHandler(sPackageManager));
 
-            Class<?> iPackageManagerInterface = Class.forName("android.content.pm.IPackageManager");
-            Object proxy = Proxy.newProxyInstance(iPackageManagerInterface.getClassLoader(),
-                    new Class<?>[]{iPackageManagerInterface},
-                    new HookPackageManagerHandler(sPackageManager));
+                sPackageManagerField.set(currentActivityThread, proxy);
 
-            sPackageManagerField.set(currentActivityThread, proxy);
-
-            PackageManager pm = application.getPackageManager();
-            Field mPmField = pm.getClass().getDeclaredField("mPM");
-            mPmField.setAccessible(true);
-            mPmField.set(pm, proxy);
+                PackageManager pm = application.getPackageManager();
+                Field mPmField = pm.getClass().getDeclaredField("mPM");
+                mPmField.setAccessible(true);
+                mPmField.set(pm, proxy);
+            }
         } catch (Exception e) {
             ApkLogger.get().debug("hookPackageManager Exception", e);
         }
@@ -121,15 +117,13 @@ public class ApkHook {
      */
     private static void hookInstrumentation(Application application) {
         try {
-            Object loadedApk = ApkReflect.getField(Application.class, application, "mLoadedApk");
-            if (loadedApk != null) {
-                Object activityThread = ApkReflect.getField(loadedApk.getClass(), loadedApk, "mActivityThread");
-                if (activityThread != null) {
-                    Instrumentation rawInstrumentation = (Instrumentation) ApkReflect.getField(activityThread.getClass(),
-                            activityThread, "mInstrumentation");
-                    HookActivityInstrumentationHnadler instrumentation = new HookActivityInstrumentationHnadler(rawInstrumentation);
-                    ApkReflect.setField(activityThread.getClass(), activityThread, "mInstrumentation", instrumentation);
-                }
+
+            Object currentActivityThread = HookActivityThread.getCurrentActivityThread(application);
+            if (currentActivityThread != null) {
+                Instrumentation rawInstrumentation = (Instrumentation) ApkReflect.getField(currentActivityThread.getClass(),
+                        currentActivityThread, "mInstrumentation");
+                HookActivityInstrumentationHnadler instrumentation = new HookActivityInstrumentationHnadler(rawInstrumentation);
+                ApkReflect.setField(currentActivityThread.getClass(), currentActivityThread, "mInstrumentation", instrumentation);
             }
         } catch (Exception e) {
             ApkLogger.get().debug("hookInstrumentation Exception", e);
