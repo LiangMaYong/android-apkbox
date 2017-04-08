@@ -13,7 +13,7 @@ public class HookProxy_ServiceDoneExecuting {
     }
 
     public static Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        ApkLogger.get().debug("hook " + method.getName(), null);
+        ApkLogger.get().debug("hook proxy " + method.getName(), null);
         try {
             return method.invoke(proxy, args);
         } catch (Exception e) {

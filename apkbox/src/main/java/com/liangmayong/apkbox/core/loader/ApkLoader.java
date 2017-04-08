@@ -14,6 +14,7 @@ import com.liangmayong.apkbox.core.resources.ApkResources;
 import com.liangmayong.apkbox.core.resources.ApkSignture;
 import com.liangmayong.apkbox.reflect.ApkMethod;
 import com.liangmayong.apkbox.reflect.ApkReflect;
+import com.liangmayong.apkbox.utils.ApkLogger;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
@@ -71,10 +72,16 @@ public class ApkLoader {
                     ApkReceiver.unregisterReceiver(loaded);
                     loaded.setApkApplication(createApplication(context, loaded, applicationName));
                     ApkReceiver.registerReceiver(context, loaded);
+                    ApkLogger.get().debug("Load apk success :" + loaded, null);
                     return loaded;
+                } else {
+                    ApkLogger.get().debug("Load apk fail : package info is null", null);
                 }
             } catch (Exception e) {
+                ApkLogger.get().debug("Load apk fail", e);
             }
+        } else {
+            ApkLogger.get().debug("Invalid apk file : " + apkPath, null);
         }
         return null;
     }

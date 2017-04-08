@@ -22,24 +22,32 @@ public class HookService_ServiceManager {
     private HookService_ServiceManager() {
     }
 
+    private static final Map<Object, Service> mProxyServices = new HashMap<Object, Service>();
     private static final Map<String, Object> mServiceTokens = new HashMap<String, Object>();
+    private static final Map<String, Service> mRealServices = new HashMap<String, Service>();
 
-    public static Object createService(Object token, Intent intent) {
+    public static Object createRealService(Object token, Intent intent) {
         if (intent.hasExtra(ApkConstant.EXTRA_APK_PATH)) {
-            String apkPath = intent.getStringExtra(ApkConstant.EXTRA_APK_PATH);
-            String className = intent.getComponent().getClassName();
-            String key = apkPath + "@" + className;
-            if (mServiceTokens.containsKey(key)) {
+            String apkPath = HookService_Component.getPath(intent);
+            String className = HookService_Component.getClassName(intent);
+            String key = HookService_Component.getKey(intent);
+            if (mRealServices.containsKey(key)) {
                 return mServiceTokens.get(key);
             } else {
                 try {
-                    HookHandle_IBinder iBinder = new HookHandle_IBinder();
-                    Object serviceToken = iBinder.getToken(token);
-                    Service proxyService = HookService_SystemServices.getService(token);
-                    Service rawService = handleCreateService(serviceToken, proxyService, apkPath, className);
-                    HookService_SystemServices.putService(serviceToken, rawService);
-                    mServiceTokens.put(key, serviceToken);
-                    return serviceToken;
+                    Service proxyService = null;
+                    if (mProxyServices.containsKey(token)) {
+                        proxyService = mProxyServices.get(token);
+                    } else {
+                        proxyService = HookService_SystemServices.getService(token);
+                        mProxyServices.put(token, proxyService);
+                    }
+                    Object realToken = token;
+                    Service rawService = handleCreateService(realToken, proxyService, apkPath, className);
+                    HookService_SystemServices.putService(realToken, rawService);
+                    mRealServices.put(key, rawService);
+                    mServiceTokens.put(key, realToken);
+                    return realToken;
                 } catch (Exception e) {
                 }
             }
@@ -49,20 +57,34 @@ public class HookService_ServiceManager {
 
     public static Object stopService(Intent intent) {
         if (intent.hasExtra(ApkConstant.EXTRA_APK_PATH)) {
-            String apkPath = intent.getStringExtra(ApkConstant.EXTRA_APK_PATH);
-            String className = intent.getComponent().getClassName();
-            String key = apkPath + "@" + className;
-            if (mServiceTokens.containsKey(key)) {
+            String key = HookService_Component.getKey(intent);
+            if (mRealServices.containsKey(key)) {
                 Object stoken = mServiceTokens.get(key);
+                Service rawService = mRealServices.get(key);
+                mRealServices.remove(key);
                 mServiceTokens.remove(key);
+                rawService.onDestroy();
                 return stoken;
             }
         }
         return null;
     }
 
+    public static Object resetProxyService(Object token) {
+        if (token != null) {
+            Service proxyService = mProxyServices.get(token);
+            HookService_SystemServices.putService(token, proxyService);
+        }
+        return token;
+    }
 
-    public static Service handleCreateService(Object serviceToken, Service proxyService, String apkPath, String serviceName) {
+    public static void onLowMemory() {
+        for (Map.Entry<String, Service> entry : mRealServices.entrySet()) {
+            entry.getValue().onLowMemory();
+        }
+    }
+
+    public static Service handleCreateService(Object realToken, Service proxyService, String apkPath, String serviceName) {
         try {
             ApkLoaded loaded = ApkLoaded.get(proxyService.getBaseContext(), apkPath);
             Context ctx = loaded.getContext(proxyService.getBaseContext());
@@ -79,7 +101,7 @@ public class HookService_ServiceManager {
             Object activityManager = getDefaultMethod.invoke(null);
 
             ApkMethod attachMethod = new ApkMethod(Service.class, rawService, "attach", Context.class, activityThreadClass, IBinder.class, Application.class, activityManagerNativeClass);
-            attachMethod.invoke(ctx, currentActivityThread, serviceToken, application, activityManager);
+            attachMethod.invoke(ctx, currentActivityThread, realToken, application, activityManager);
 
             ApkMethod attachBaseContextMethod = new ApkMethod(Service.class, rawService, "attachBaseContext", Context.class);
             attachBaseContextMethod.invoke(ctx);

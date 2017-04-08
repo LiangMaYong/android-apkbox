@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 
@@ -108,6 +109,14 @@ public final class ApkContext extends Application {
             name.putExtra(ApkConstant.EXTRA_APK_PATH, apkPath);
         }
         return super.stopService(name);
+    }
+
+    @Override
+    public boolean bindService(Intent service, ServiceConnection conn, int flags) {
+        if (isApkLoaded()) {
+            service.putExtra(ApkConstant.EXTRA_APK_PATH, apkPath);
+        }
+        return super.bindService(service, conn, flags);
     }
 
 }

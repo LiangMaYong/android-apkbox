@@ -26,7 +26,7 @@ public class HookActivity_Intent {
             }
             intent.putExtra(ApkConstant.EXTRA_APK_PATH, target.getIntent().getStringExtra(ApkConstant.EXTRA_APK_PATH));
         }
-        return HookActivity_Component.modify(intent, target.getPackageName());
+        return HookActivity_Component.modify(intent);
     }
 
 }

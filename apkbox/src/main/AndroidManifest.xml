@@ -7,11 +7,51 @@
     <application
         android:allowBackup="true"
         android:supportsRtl="true">
+
+        <!-- ProxyActivity -->
         <activity
-            android:name="com.liangmayong.apkbox.proxy.ProxyActivity"
+            android:name="com.liangmayong.apkbox.proxy.activity.Proxy0Activity"
+            android:process="@string/apkbox_process"/>
+        <activity
+            android:name="com.liangmayong.apkbox.proxy.activity.Proxy404Activity"
+            android:process="@string/apkbox_process"/>
+
+        <!-- ProxyService -->
+        <service
+            android:name="com.liangmayong.apkbox.proxy.service.Proxy404Service"
             android:process="@string/apkbox_process"/>
         <service
-            android:name="com.liangmayong.apkbox.proxy.ProxyService"
+            android:name="com.liangmayong.apkbox.proxy.service.Proxy0Service"
+            android:process="@string/apkbox_process"/>
+        <service
+            android:name="com.liangmayong.apkbox.proxy.service.Proxy1Service"
+            android:process="@string/apkbox_process"/>
+        <service
+            android:name="com.liangmayong.apkbox.proxy.service.Proxy2Service"
+            android:process="@string/apkbox_process"/>
+        <service
+            android:name="com.liangmayong.apkbox.proxy.service.Proxy3Service"
+            android:process="@string/apkbox_process"/>
+        <service
+            android:name="com.liangmayong.apkbox.proxy.service.Proxy4Service"
+            android:process="@string/apkbox_process"/>
+        <service
+            android:name="com.liangmayong.apkbox.proxy.service.Proxy5Service"
+            android:process="@string/apkbox_process"/>
+        <service
+            android:name="com.liangmayong.apkbox.proxy.service.Proxy6Service"
+            android:process="@string/apkbox_process"/>
+        <service
+            android:name="com.liangmayong.apkbox.proxy.service.Proxy7Service"
+            android:process="@string/apkbox_process"/>
+        <service
+            android:name="com.liangmayong.apkbox.proxy.service.Proxy8Service"
+            android:process="@string/apkbox_process"/>
+        <service
+            android:name="com.liangmayong.apkbox.proxy.service.Proxy9Service"
+            android:process="@string/apkbox_process"/>
+        <service
+            android:name="com.liangmayong.apkbox.proxy.service.Proxy10Service"
             android:process="@string/apkbox_process"/>
     </application>
 

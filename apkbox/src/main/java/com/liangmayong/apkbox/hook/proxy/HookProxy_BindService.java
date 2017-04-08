@@ -3,7 +3,6 @@ package com.liangmayong.apkbox.hook.proxy;
 import android.content.Intent;
 import android.util.Pair;
 
-import com.liangmayong.apkbox.hook.HookActivityThreadHandlerCallback;
 import com.liangmayong.apkbox.hook.service.HookService_Component;
 import com.liangmayong.apkbox.utils.ApkLogger;
 
@@ -18,7 +17,7 @@ public class HookProxy_BindService {
     }
 
     public static Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        ApkLogger.get().debug("hook " + method.getName(), null);
+        ApkLogger.get().debug("hook proxy " + method.getName(), null);
         Pair<Integer, Intent> pairPairPair = getArgsPair(args);
         if (pairPairPair.first != -1) {
             int intentIndex = pairPairPair.first;

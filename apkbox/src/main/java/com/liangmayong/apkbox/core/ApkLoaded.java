@@ -47,11 +47,11 @@ public class ApkLoaded {
         if (APKLOADEDS.containsKey(key)) {
             return APKLOADEDS.get(key);
         }
-        ApkLoaded info = ApkLoader.loadApk(context, apkPath);
-        if (info != null) {
-            APKLOADEDS.put(key, info);
+        ApkLoaded loaded = ApkLoader.loadApk(context, apkPath);
+        if (loaded != null) {
+            APKLOADEDS.put(key, loaded);
         }
-        return info;
+        return loaded;
     }
 
     /////////////////////////////////////////////////////////////////////////////////

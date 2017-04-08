@@ -17,7 +17,7 @@ public class HookProxy_StartService {
     }
 
     public static Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        ApkLogger.get().debug("hook " + method.getName(), null);
+        ApkLogger.get().debug("hook proxy " + method.getName(), null);
         Pair<Integer, Intent> pairPairPair = getArgsPair(args);
         if (pairPairPair.first != -1) {
             int intentIndex = pairPairPair.first;

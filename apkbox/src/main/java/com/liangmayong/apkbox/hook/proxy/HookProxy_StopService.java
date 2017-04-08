@@ -18,10 +18,10 @@ public class HookProxy_StopService {
     }
 
     public static Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        ApkLogger.get().debug("hook " + method.getName(), null);
+        ApkLogger.get().debug("hook proxy " + method.getName(), null);
         Pair<Integer, Intent> pairPairPair = getArgsPair(args);
         if (pairPairPair.first != -1) {
-            HookActivityThreadHandlerCallback.doStopService(pairPairPair.second);
+            HookActivityThreadHandlerCallback.doRealStopService(pairPairPair.second);
             int intentIndex = pairPairPair.first;
             Intent newIntent = HookService_Component.modify(pairPairPair.second);
             args[intentIndex] = newIntent;

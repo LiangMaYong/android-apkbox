@@ -15,7 +15,7 @@ public class HookProxy_GetServiceInfo {
     }
 
     public static Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        ApkLogger.get().debug("hook " + method.getName(), null);
+        ApkLogger.get().debug("hook proxy " + method.getName(), null);
         try {
             Object actInfo = method.invoke(proxy, args);
             if (actInfo != null) {

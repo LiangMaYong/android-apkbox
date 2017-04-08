@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.liangmayong.apkbox.core.ApkLoaded;
 
@@ -27,6 +28,10 @@ public class MainActivity extends AppCompatActivity {
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             loaded = (ApkLoaded) msg.obj;
+            if (loaded == null) {
+                Toast.makeText(MainActivity.this, "loaded is null", Toast.LENGTH_SHORT).show();
+                return;
+            }
             Log.e("TAG", loaded + "");
             imageView.setImageDrawable(loaded.getApkIcon());
             textView.setText(loaded.getApkName());

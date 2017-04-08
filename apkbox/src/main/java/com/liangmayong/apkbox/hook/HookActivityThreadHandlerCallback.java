@@ -23,7 +23,7 @@ public final class HookActivityThreadHandlerCallback implements Handler.Callback
 
     private static HookActivityThreadHandlerCallback callback;
 
-    public static void doStopService(Intent intent) {
+    public static void doRealStopService(Intent intent) {
         if (callback != null) {
             callback.stopService(intent);
         }
@@ -92,13 +92,8 @@ public final class HookActivityThreadHandlerCallback implements Handler.Callback
     }
 
     private boolean stopService(Intent intent) {
-        Object obj = HookService_ServiceManager.stopService(intent);
-        if (obj != null) {
-            Message message = new Message();
-            message.what = STOP_SERVICE;
-            message.obj = obj;
-            handleMessage(message);
-        }
+        Object token = HookService_ServiceManager.stopService(intent);
+        HookService_ServiceManager.resetProxyService(token);
         return true;
     }
 }

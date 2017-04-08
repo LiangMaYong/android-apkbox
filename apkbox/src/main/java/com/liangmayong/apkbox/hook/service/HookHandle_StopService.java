@@ -13,8 +13,8 @@ public class HookHandle_StopService {
     private HookHandle_StopService() {
     }
 
-    public static void handleStopService(Handler hnadler, Message msg) {
-        ApkLogger.get().debug("hook handleStopService", null);
+    public static void handleStopService(Handler handler, Message msg) {
+        ApkLogger.get().debug("hook handle stopService", null);
     }
 
 

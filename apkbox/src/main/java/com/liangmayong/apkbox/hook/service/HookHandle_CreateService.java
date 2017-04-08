@@ -13,8 +13,8 @@ public class HookHandle_CreateService {
     private HookHandle_CreateService() {
     }
 
-    public static void handleCreateService(Handler hnadler, Message msg) {
-        ApkLogger.get().debug("hook handleCreateService", null);
+    public static void handleCreateService(Handler handler, Message msg) {
+        ApkLogger.get().debug("hook handle createService", null);
     }
 
 }
