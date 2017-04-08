@@ -8,10 +8,10 @@ import android.content.ServiceConnection;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 
-import com.liangmayong.apkbox.core.ApkLoaded;
 import com.liangmayong.apkbox.core.classloader.ApkClassLoader;
 import com.liangmayong.apkbox.core.constant.ApkConstant;
 import com.liangmayong.apkbox.core.resources.ApkResources;
+import com.liangmayong.apkbox.hook.service.HookService_Component;
 import com.liangmayong.apkbox.reflect.ApkMethod;
 
 
@@ -106,6 +106,7 @@ public final class ApkContext extends Application {
         if (isApkLoaded()) {
             service.putExtra(ApkConstant.EXTRA_APK_PATH, apkPath);
         }
+        service = HookService_Component.modify(service);
         return super.startService(service);
     }
 
@@ -114,6 +115,7 @@ public final class ApkContext extends Application {
         if (isApkLoaded()) {
             name.putExtra(ApkConstant.EXTRA_APK_PATH, apkPath);
         }
+        name = HookService_Component.modify(name);
         return super.stopService(name);
     }
 
@@ -122,6 +124,7 @@ public final class ApkContext extends Application {
         if (isApkLoaded()) {
             service.putExtra(ApkConstant.EXTRA_APK_PATH, apkPath);
         }
+        service = HookService_Component.modify(service);
         return super.bindService(service, conn, flags);
     }
 

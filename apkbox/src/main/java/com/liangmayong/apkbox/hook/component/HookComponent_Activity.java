@@ -53,7 +53,7 @@ public class HookComponent_Activity {
                 && raw != null
                 && raw.getComponent() != null
                 && raw.hasExtra(ApkConstant.EXTRA_APK_PATH)) {
-            String key = getKey(raw);
+            String key = getPath(raw) + "@" + getClassName(raw);
             Class<?> clazz = null;
             if (raw.hasExtra(ApkConstant.EXTRA_APK_PROXY)) {
                 String proxyClass = raw.getStringExtra(ApkConstant.EXTRA_APK_PROXY);
@@ -85,10 +85,6 @@ public class HookComponent_Activity {
             return newIntent;
         }
         return raw;
-    }
-
-    public static String getKey(Intent intent) {
-        return getPath(intent) + "@" + getClassName(intent);
     }
 
     public static String getPath(Intent intent) {

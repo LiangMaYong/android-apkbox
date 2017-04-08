@@ -1,9 +1,10 @@
-package com.liangmayong.apkbox.hook.component;
+package com.liangmayong.apkbox.hook.service;
 
 import android.content.ComponentName;
 import android.content.Intent;
 
 import com.liangmayong.apkbox.core.constant.ApkConstant;
+import com.liangmayong.apkbox.hook.component.HookComponent_Activity;
 import com.liangmayong.apkbox.proxy.service.Proxy0Service;
 import com.liangmayong.apkbox.proxy.service.Proxy10Service;
 import com.liangmayong.apkbox.proxy.service.Proxy1Service;
@@ -18,15 +19,16 @@ import com.liangmayong.apkbox.proxy.service.Proxy8Service;
 import com.liangmayong.apkbox.proxy.service.Proxy9Service;
 import com.liangmayong.apkbox.utils.ApkLogger;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Created by LiangMaYong on 2017/4/5.
  */
-public class HookComponent_Service {
+public class HookService_Component {
 
-    private HookComponent_Service() {
+    private HookService_Component() {
     }
 
     // COMPONENTMAP

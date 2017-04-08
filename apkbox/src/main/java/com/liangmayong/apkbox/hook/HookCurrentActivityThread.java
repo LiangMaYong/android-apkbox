@@ -7,7 +7,7 @@ import com.liangmayong.apkbox.reflect.ApkReflect;
 /**
  * Created by liangmayong on 2017/4/8.
  */
-public class HookActivityThread {
+public class HookCurrentActivityThread {
 
     private static Object currentActivityThread = null;
 

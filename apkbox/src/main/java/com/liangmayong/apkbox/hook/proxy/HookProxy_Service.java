@@ -3,7 +3,7 @@ package com.liangmayong.apkbox.hook.proxy;
 import android.content.Intent;
 import android.util.Pair;
 
-import com.liangmayong.apkbox.hook.component.HookComponent_Service;
+import com.liangmayong.apkbox.hook.service.HookService_Component;
 import com.liangmayong.apkbox.utils.ApkLogger;
 
 import java.lang.reflect.Method;
@@ -11,9 +11,9 @@ import java.lang.reflect.Method;
 /**
  * Created by LiangMaYong on 2017/4/5.
  */
-public class HookProxy_UnbindService {
+public class HookProxy_Service {
 
-    private HookProxy_UnbindService() {
+    private HookProxy_Service() {
     }
 
     public static Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
@@ -21,7 +21,7 @@ public class HookProxy_UnbindService {
         Pair<Integer, Intent> pairPairPair = getArgsPair(args);
         if (pairPairPair.first != -1) {
             int intentIndex = pairPairPair.first;
-            Intent newIntent = HookComponent_Service.modify(pairPairPair.second);
+            Intent newIntent = HookService_Component.modify(pairPairPair.second);
             args[intentIndex] = newIntent;
         }
         return method.invoke(proxy, args);

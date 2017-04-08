@@ -16,6 +16,7 @@ public class ApkLayoutInflaterModifier {
     private ApkLayoutInflaterModifier() {
     }
 
+    private static String cusApkPath = "";
     static HashMap<String, Constructor<? extends View>> sConstructorMap = null;
 
     static {
@@ -25,9 +26,14 @@ public class ApkLayoutInflaterModifier {
         }
     }
 
-    public static void modify() {
-        if (sConstructorMap != null) {
-            sConstructorMap.clear();
+    public static void modify(String apkPath) {
+        if (apkPath == null || apkPath.equals(cusApkPath)) {
+            return;
+        } else {
+            cusApkPath = apkPath;
+            if (sConstructorMap != null) {
+                sConstructorMap.clear();
+            }
         }
     }
 }

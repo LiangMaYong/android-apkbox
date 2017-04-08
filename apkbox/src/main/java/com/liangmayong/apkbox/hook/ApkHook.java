@@ -26,13 +26,13 @@ public class ApkHook {
         ApkLogger.get().debug("hook initialize", null);
         hookInstrumentation(application);
         hookPackageManager(application);
-        hookActivityManagerNative(application);
         hookActivityThreadHandler(application);
+        hookActivityManagerNative(application);
     }
 
     private static void hookActivityThreadHandler(Application application) {
         try {
-            Object currentActivityThread = HookActivityThread.getCurrentActivityThread(application);
+            Object currentActivityThread = HookCurrentActivityThread.getCurrentActivityThread(application);
             if (currentActivityThread != null) {
                 Field mHField = currentActivityThread.getClass().getDeclaredField("mH");
                 mHField.setAccessible(true);
@@ -85,7 +85,7 @@ public class ApkHook {
      */
     private static void hookPackageManager(Application application) {
         try {
-            Object currentActivityThread = HookActivityThread.getCurrentActivityThread(application);
+            Object currentActivityThread = HookCurrentActivityThread.getCurrentActivityThread(application);
             if (currentActivityThread != null) {
                 Field sPackageManagerField = currentActivityThread.getClass().getDeclaredField("sPackageManager");
                 sPackageManagerField.setAccessible(true);
@@ -118,7 +118,7 @@ public class ApkHook {
     private static void hookInstrumentation(Application application) {
         try {
 
-            Object currentActivityThread = HookActivityThread.getCurrentActivityThread(application);
+            Object currentActivityThread = HookCurrentActivityThread.getCurrentActivityThread(application);
             if (currentActivityThread != null) {
                 Instrumentation rawInstrumentation = (Instrumentation) ApkReflect.getField(currentActivityThread.getClass(),
                         currentActivityThread, "mInstrumentation");

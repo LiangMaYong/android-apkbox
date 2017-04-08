@@ -6,7 +6,7 @@ import android.os.Binder;
 import android.os.IBinder;
 
 import com.liangmayong.apkbox.core.constant.ApkConstant;
-import com.liangmayong.apkbox.hook.service.HookService_ServiceManager;
+import com.liangmayong.apkbox.hook.service.HookService_Manager;
 import com.liangmayong.apkbox.utils.ApkLogger;
 
 /**
@@ -21,7 +21,7 @@ public class Proxy404Service extends Service {
         ApkLogger.get().debug(TAG + " - onBind", null);
         if (intent.hasExtra(ApkConstant.EXTRA_APK_TARGET_INTENT)) {
             Intent target = intent.getParcelableExtra(ApkConstant.EXTRA_APK_TARGET_INTENT);
-            return HookService_ServiceManager.onBindService(target);
+            return HookService_Manager.onBindService(this, target);
         }
         return new Proxy404Service.ProxyBinder();
     }
@@ -38,16 +38,29 @@ public class Proxy404Service extends Service {
         super.onStart(intent, startId);
         if (intent.hasExtra(ApkConstant.EXTRA_APK_TARGET_INTENT)) {
             Intent target = intent.getParcelableExtra(ApkConstant.EXTRA_APK_TARGET_INTENT);
-            HookService_ServiceManager.onStartService(target, startId);
+            HookService_Manager.onStartService(this, target, startId);
         }
     }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        ApkLogger.get().debug(TAG + " - onStartCommand", null);
+        if (intent != null) {
+            if (intent.hasExtra(ApkConstant.EXTRA_APK_TARGET_INTENT)) {
+                Intent target = intent.getParcelableExtra(ApkConstant.EXTRA_APK_TARGET_INTENT);
+                return HookService_Manager.onStartCommand(this, target, flags, startId);
+            }
+        }
+        return super.onStartCommand(intent, flags, startId);
+    }
+
 
     @Override
     public void onRebind(Intent intent) {
         ApkLogger.get().debug(TAG + " - onRebind", null);
         if (intent.hasExtra(ApkConstant.EXTRA_APK_TARGET_INTENT)) {
             Intent target = intent.getParcelableExtra(ApkConstant.EXTRA_APK_TARGET_INTENT);
-            HookService_ServiceManager.onRebindService(target);
+            HookService_Manager.onRebindService(this, target);
         }
         super.onRebind(intent);
     }
@@ -57,32 +70,23 @@ public class Proxy404Service extends Service {
         ApkLogger.get().debug(TAG + " - onUnbind", null);
         if (intent.hasExtra(ApkConstant.EXTRA_APK_TARGET_INTENT)) {
             Intent target = intent.getParcelableExtra(ApkConstant.EXTRA_APK_TARGET_INTENT);
-            return HookService_ServiceManager.onUnbindService(target);
+            return HookService_Manager.onUnbindService(this, target);
         }
         return super.onUnbind(intent);
-    }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        ApkLogger.get().debug(TAG + " - onStartCommand", null);
-        if (intent.hasExtra(ApkConstant.EXTRA_APK_TARGET_INTENT)) {
-            Intent target = intent.getParcelableExtra(ApkConstant.EXTRA_APK_TARGET_INTENT);
-            return HookService_ServiceManager.onStartCommand(target, flags, startId);
-        }
-        return super.onStartCommand(intent, flags, startId);
     }
 
     @Override
     public void onDestroy() {
         ApkLogger.get().debug(TAG + " - onDestroy", null);
         super.onDestroy();
+        HookService_Manager.onDestroyService(this);
     }
 
     @Override
     public void onLowMemory() {
         ApkLogger.get().debug(TAG + " - onLowMemory", null);
         super.onLowMemory();
-        HookService_ServiceManager.onLowMemory();
+        HookService_Manager.onLowMemoryService(this);
     }
 
     private class ProxyBinder extends Binder {

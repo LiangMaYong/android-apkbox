@@ -18,11 +18,12 @@ public class HookActivity_OnCreate {
     }
 
     public static void onCreate(Activity target, Bundle icicle) {
-        ApkLayoutInflaterModifier.modify();
+        String apkPath = "";
         if (target.getIntent().hasExtra(ApkConstant.EXTRA_APK_PATH)) {
-            String apkPath = target.getIntent().getStringExtra(ApkConstant.EXTRA_APK_PATH);
+            apkPath = target.getIntent().getStringExtra(ApkConstant.EXTRA_APK_PATH);
             ApkActivityModifier.modify(target, apkPath);
         }
+        ApkLayoutInflaterModifier.modify(apkPath);
         if (target.getIntent().hasExtra(ApkConstant.EXTRA_APK_EXTRAS)) {
             String extras_id = target.getIntent().getStringExtra(ApkConstant.EXTRA_APK_EXTRAS);
             Bundle extras = ApkExtras.getExtras(extras_id);
