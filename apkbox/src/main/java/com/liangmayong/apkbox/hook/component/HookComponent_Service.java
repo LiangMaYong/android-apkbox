@@ -1,11 +1,21 @@
-package com.liangmayong.apkbox.hook.activity;
+package com.liangmayong.apkbox.hook.component;
 
 import android.content.ComponentName;
 import android.content.Intent;
 
 import com.liangmayong.apkbox.core.constant.ApkConstant;
-import com.liangmayong.apkbox.proxy.activity.Proxy0Activity;
-import com.liangmayong.apkbox.proxy.activity.Proxy404Activity;
+import com.liangmayong.apkbox.proxy.service.Proxy0Service;
+import com.liangmayong.apkbox.proxy.service.Proxy10Service;
+import com.liangmayong.apkbox.proxy.service.Proxy1Service;
+import com.liangmayong.apkbox.proxy.service.Proxy2Service;
+import com.liangmayong.apkbox.proxy.service.Proxy3Service;
+import com.liangmayong.apkbox.proxy.service.Proxy404Service;
+import com.liangmayong.apkbox.proxy.service.Proxy4Service;
+import com.liangmayong.apkbox.proxy.service.Proxy5Service;
+import com.liangmayong.apkbox.proxy.service.Proxy6Service;
+import com.liangmayong.apkbox.proxy.service.Proxy7Service;
+import com.liangmayong.apkbox.proxy.service.Proxy8Service;
+import com.liangmayong.apkbox.proxy.service.Proxy9Service;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,16 +23,26 @@ import java.util.Map;
 /**
  * Created by LiangMaYong on 2017/4/5.
  */
-public class HookActivity_Component {
+public class HookComponent_Service {
 
-    private HookActivity_Component() {
+    private HookComponent_Service() {
     }
 
     // COMPONENTMAP
     private static Map<String, Class> COMPONENTMAP = new HashMap<>();
     // CLASSES
     public static Class<?>[] CLASSES = new Class[]{
-            Proxy0Activity.class
+            Proxy0Service.class,
+            Proxy1Service.class,
+            Proxy2Service.class,
+            Proxy3Service.class,
+            Proxy4Service.class,
+            Proxy5Service.class,
+            Proxy6Service.class,
+            Proxy7Service.class,
+            Proxy8Service.class,
+            Proxy9Service.class,
+            Proxy10Service.class,
     };
     // index
     private static int index = 0;
@@ -37,7 +57,7 @@ public class HookActivity_Component {
             if (raw.hasExtra(ApkConstant.EXTRA_APK_PROXY)) {
                 String proxyClass = raw.getStringExtra(ApkConstant.EXTRA_APK_PROXY);
                 try {
-                    clazz = HookActivity_Component.class.getClassLoader().loadClass(proxyClass);
+                    clazz = HookComponent_Activity.class.getClassLoader().loadClass(proxyClass);
                 } catch (ClassNotFoundException e) {
                 }
             }
@@ -46,7 +66,7 @@ public class HookActivity_Component {
                     clazz = COMPONENTMAP.get(key);
                 } else {
                     if (index >= CLASSES.length) {
-                        clazz = Proxy404Activity.class;
+                        clazz = Proxy404Service.class;
                     } else {
                         clazz = CLASSES[index];
                         COMPONENTMAP.put(key, clazz);

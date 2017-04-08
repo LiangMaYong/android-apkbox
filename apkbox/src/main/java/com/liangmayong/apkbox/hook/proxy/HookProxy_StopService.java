@@ -3,8 +3,8 @@ package com.liangmayong.apkbox.hook.proxy;
 import android.content.Intent;
 import android.util.Pair;
 
-import com.liangmayong.apkbox.hook.HookActivityThreadHandlerCallback;
-import com.liangmayong.apkbox.hook.service.HookService_Component;
+import com.liangmayong.apkbox.hook.component.HookComponent_Service;
+import com.liangmayong.apkbox.hook.service.HookService_ServiceManager;
 import com.liangmayong.apkbox.utils.ApkLogger;
 
 import java.lang.reflect.Method;
@@ -21,9 +21,9 @@ public class HookProxy_StopService {
         ApkLogger.get().debug("hook proxy " + method.getName(), null);
         Pair<Integer, Intent> pairPairPair = getArgsPair(args);
         if (pairPairPair.first != -1) {
-            HookActivityThreadHandlerCallback.doRealStopService(pairPairPair.second);
+            HookService_ServiceManager.addStopService(pairPairPair.second);
             int intentIndex = pairPairPair.first;
-            Intent newIntent = HookService_Component.modify(pairPairPair.second);
+            Intent newIntent = HookComponent_Service.modify(pairPairPair.second);
             args[intentIndex] = newIntent;
         }
         return method.invoke(proxy, args);

@@ -15,6 +15,7 @@ public class HookHandle_StopService {
 
     public static void handleStopService(Handler handler, Message msg) {
         ApkLogger.get().debug("hook handle stopService", null);
+        HookService_ServiceManager.doStopRealService(msg.obj);
     }
 
 

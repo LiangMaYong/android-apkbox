@@ -10,10 +10,40 @@
 
         <!-- ProxyActivity -->
         <activity
+            android:name="com.liangmayong.apkbox.proxy.activity.Proxy404Activity"
+            android:process="@string/apkbox_process"/>
+        <activity
             android:name="com.liangmayong.apkbox.proxy.activity.Proxy0Activity"
             android:process="@string/apkbox_process"/>
         <activity
-            android:name="com.liangmayong.apkbox.proxy.activity.Proxy404Activity"
+            android:name="com.liangmayong.apkbox.proxy.activity.Proxy1Activity"
+            android:process="@string/apkbox_process"/>
+        <activity
+            android:name="com.liangmayong.apkbox.proxy.activity.Proxy2Activity"
+            android:process="@string/apkbox_process"/>
+        <activity
+            android:name="com.liangmayong.apkbox.proxy.activity.Proxy3Activity"
+            android:process="@string/apkbox_process"/>
+        <activity
+            android:name="com.liangmayong.apkbox.proxy.activity.Proxy4Activity"
+            android:process="@string/apkbox_process"/>
+        <activity
+            android:name="com.liangmayong.apkbox.proxy.activity.Proxy5Activity"
+            android:process="@string/apkbox_process"/>
+        <activity
+            android:name="com.liangmayong.apkbox.proxy.activity.Proxy6Activity"
+            android:process="@string/apkbox_process"/>
+        <activity
+            android:name="com.liangmayong.apkbox.proxy.activity.Proxy7Activity"
+            android:process="@string/apkbox_process"/>
+        <activity
+            android:name="com.liangmayong.apkbox.proxy.activity.Proxy8Activity"
+            android:process="@string/apkbox_process"/>
+        <activity
+            android:name="com.liangmayong.apkbox.proxy.activity.Proxy9Activity"
+            android:process="@string/apkbox_process"/>
+        <activity
+            android:name="com.liangmayong.apkbox.proxy.activity.Proxy10Activity"
             android:process="@string/apkbox_process"/>
 
         <!-- ProxyService -->

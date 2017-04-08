@@ -1,7 +1,6 @@
 package com.liangmayong.apkbox.hook;
 
 import android.annotation.TargetApi;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
@@ -12,7 +11,6 @@ import com.liangmayong.apkbox.hook.service.HookHandle_CreateService;
 import com.liangmayong.apkbox.hook.service.HookHandle_ServiceArgs;
 import com.liangmayong.apkbox.hook.service.HookHandle_StopService;
 import com.liangmayong.apkbox.hook.service.HookHandle_UnbindService;
-import com.liangmayong.apkbox.hook.service.HookService_ServiceManager;
 import com.liangmayong.apkbox.reflect.ApkReflect;
 
 /**
@@ -20,14 +18,6 @@ import com.liangmayong.apkbox.reflect.ApkReflect;
  */
 @TargetApi(Build.VERSION_CODES.CUPCAKE)
 public final class HookActivityThreadHandlerCallback implements Handler.Callback {
-
-    private static HookActivityThreadHandlerCallback callback;
-
-    public static void doRealStopService(Intent intent) {
-        if (callback != null) {
-            callback.stopService(intent);
-        }
-    }
 
     private final Handler mBase;
     private int LAUNCH_ACTIVITY = 100;
@@ -38,7 +28,6 @@ public final class HookActivityThreadHandlerCallback implements Handler.Callback
     private int UNBIND_SERVICE = 122;
 
     public HookActivityThreadHandlerCallback(Handler base) {
-        callback = this;
         mBase = base;
         try {
             LAUNCH_ACTIVITY = (Integer) ApkReflect.getField(Class.forName("android.app.ActivityThread$H"), null, "LAUNCH_ACTIVITY");
@@ -88,12 +77,6 @@ public final class HookActivityThreadHandlerCallback implements Handler.Callback
             HookHandle_UnbindService.handleUnbindService(mBase, msg);
         }
         mBase.handleMessage(msg);
-        return true;
-    }
-
-    private boolean stopService(Intent intent) {
-        Object token = HookService_ServiceManager.stopService(intent);
-        HookService_ServiceManager.resetProxyService(token);
         return true;
     }
 }

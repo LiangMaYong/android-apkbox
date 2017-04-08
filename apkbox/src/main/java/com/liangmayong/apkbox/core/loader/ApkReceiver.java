@@ -69,7 +69,7 @@ public final class ApkReceiver {
                         try {
                             BroadcastReceiver broadcastReceiver = (BroadcastReceiver) clazz.newInstance();
                             receivers.add(broadcastReceiver);
-                            context.getApplicationContext().registerReceiver(broadcastReceiver, entry.getValue());
+                            context.registerReceiver(broadcastReceiver, entry.getValue());
                         } catch (Exception e) {
                         }
                     }

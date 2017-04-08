@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import com.liangmayong.apkbox.core.constant.ApkConstant;
 import com.liangmayong.apkbox.core.resources.ApkExtras;
+import com.liangmayong.apkbox.hook.component.HookComponent_Activity;
 
 /**
  * Created by LiangMaYong on 2017/4/5.
@@ -26,7 +27,7 @@ public class HookActivity_Intent {
             }
             intent.putExtra(ApkConstant.EXTRA_APK_PATH, target.getIntent().getStringExtra(ApkConstant.EXTRA_APK_PATH));
         }
-        return HookActivity_Component.modify(intent);
+        return HookComponent_Activity.modify(intent);
     }
 
 }

@@ -144,11 +144,13 @@ public class ApkLoader {
                     .newInstance();
             ApkMethod method = new ApkMethod(Application.class, application, "attach", Context.class);
             method.invoke(ctx);
+
             ApkReflect.setField(Application.class, application, "mBase", ctx);
             application.onCreate();
         } catch (Exception e) {
             application = (Application) ctx;
         }
+        ApkLogger.get().debug("make Application : " + application, null);
         return application;
     }
 }

@@ -1,22 +1,21 @@
-package com.liangmayong.apkbox.hook.service;
+package com.liangmayong.apkbox.hook.component;
 
 import android.content.ComponentName;
 import android.content.Intent;
 
 import com.liangmayong.apkbox.core.constant.ApkConstant;
-import com.liangmayong.apkbox.hook.activity.HookActivity_Component;
-import com.liangmayong.apkbox.proxy.service.Proxy0Service;
-import com.liangmayong.apkbox.proxy.service.Proxy10Service;
-import com.liangmayong.apkbox.proxy.service.Proxy1Service;
-import com.liangmayong.apkbox.proxy.service.Proxy2Service;
-import com.liangmayong.apkbox.proxy.service.Proxy3Service;
-import com.liangmayong.apkbox.proxy.service.Proxy404Service;
-import com.liangmayong.apkbox.proxy.service.Proxy4Service;
-import com.liangmayong.apkbox.proxy.service.Proxy5Service;
-import com.liangmayong.apkbox.proxy.service.Proxy6Service;
-import com.liangmayong.apkbox.proxy.service.Proxy7Service;
-import com.liangmayong.apkbox.proxy.service.Proxy8Service;
-import com.liangmayong.apkbox.proxy.service.Proxy9Service;
+import com.liangmayong.apkbox.proxy.activity.Proxy0Activity;
+import com.liangmayong.apkbox.proxy.activity.Proxy10Activity;
+import com.liangmayong.apkbox.proxy.activity.Proxy1Activity;
+import com.liangmayong.apkbox.proxy.activity.Proxy2Activity;
+import com.liangmayong.apkbox.proxy.activity.Proxy3Activity;
+import com.liangmayong.apkbox.proxy.activity.Proxy404Activity;
+import com.liangmayong.apkbox.proxy.activity.Proxy4Activity;
+import com.liangmayong.apkbox.proxy.activity.Proxy5Activity;
+import com.liangmayong.apkbox.proxy.activity.Proxy6Activity;
+import com.liangmayong.apkbox.proxy.activity.Proxy7Activity;
+import com.liangmayong.apkbox.proxy.activity.Proxy8Activity;
+import com.liangmayong.apkbox.proxy.activity.Proxy9Activity;
 import com.liangmayong.apkbox.utils.ApkLogger;
 
 import java.util.HashMap;
@@ -25,25 +24,28 @@ import java.util.Map;
 /**
  * Created by LiangMaYong on 2017/4/5.
  */
-public class HookService_Component {
+public class HookComponent_Activity {
 
-    private HookService_Component() {
+    private HookComponent_Activity() {
     }
 
+    // COMPONENTMAP
     private static Map<String, Class> COMPONENTMAP = new HashMap<>();
+    // CLASSES
     public static Class<?>[] CLASSES = new Class[]{
-            Proxy0Service.class,
-            Proxy1Service.class,
-            Proxy2Service.class,
-            Proxy3Service.class,
-            Proxy4Service.class,
-            Proxy5Service.class,
-            Proxy6Service.class,
-            Proxy7Service.class,
-            Proxy8Service.class,
-            Proxy9Service.class,
-            Proxy10Service.class,
+            Proxy0Activity.class,
+            Proxy1Activity.class,
+            Proxy2Activity.class,
+            Proxy3Activity.class,
+            Proxy4Activity.class,
+            Proxy5Activity.class,
+            Proxy6Activity.class,
+            Proxy7Activity.class,
+            Proxy8Activity.class,
+            Proxy9Activity.class,
+            Proxy10Activity.class,
     };
+    // index
     private static int index = 0;
 
     public static Intent modify(Intent raw) {
@@ -56,7 +58,7 @@ public class HookService_Component {
             if (raw.hasExtra(ApkConstant.EXTRA_APK_PROXY)) {
                 String proxyClass = raw.getStringExtra(ApkConstant.EXTRA_APK_PROXY);
                 try {
-                    clazz = HookActivity_Component.class.getClassLoader().loadClass(proxyClass);
+                    clazz = HookComponent_Activity.class.getClassLoader().loadClass(proxyClass);
                 } catch (ClassNotFoundException e) {
                 }
             }
@@ -65,7 +67,7 @@ public class HookService_Component {
                     clazz = COMPONENTMAP.get(key);
                 } else {
                     if (index >= CLASSES.length) {
-                        clazz = Proxy404Service.class;
+                        clazz = Proxy404Activity.class;
                     } else {
                         clazz = CLASSES[index];
                         COMPONENTMAP.put(key, clazz);
@@ -76,6 +78,7 @@ public class HookService_Component {
             Intent newIntent = new Intent();
             ComponentName componentName = new ComponentName(raw.getComponent().getPackageName(), clazz.getName());
             ApkLogger.get().debug("Activity proxy:" + clazz.getName(), null);
+            ApkLogger.get().debug("Activity proxy:" + key, null);
             newIntent.setComponent(componentName);
             newIntent.putExtra(ApkConstant.EXTRA_APK_TARGET_INTENT, raw);
             newIntent.putExtra(ApkConstant.EXTRA_APK_MODIFIED, 1);

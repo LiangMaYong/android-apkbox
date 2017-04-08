@@ -8,9 +8,11 @@ import android.os.IBinder;
 
 import com.liangmayong.apkbox.core.ApkLoaded;
 import com.liangmayong.apkbox.core.constant.ApkConstant;
+import com.liangmayong.apkbox.hook.component.HookComponent_Service;
 import com.liangmayong.apkbox.reflect.ApkMethod;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,15 +24,16 @@ public class HookService_ServiceManager {
     private HookService_ServiceManager() {
     }
 
+    private static final Map<Object, ArrayList<String>> mStopServices = new HashMap<Object, ArrayList<String>>();
     private static final Map<Object, Service> mProxyServices = new HashMap<Object, Service>();
     private static final Map<String, Object> mServiceTokens = new HashMap<String, Object>();
     private static final Map<String, Service> mRealServices = new HashMap<String, Service>();
 
     public static Object createRealService(Object token, Intent intent) {
         if (intent.hasExtra(ApkConstant.EXTRA_APK_PATH)) {
-            String apkPath = HookService_Component.getPath(intent);
-            String className = HookService_Component.getClassName(intent);
-            String key = HookService_Component.getKey(intent);
+            String apkPath = HookComponent_Service.getPath(intent);
+            String className = HookComponent_Service.getClassName(intent);
+            String key = HookComponent_Service.getKey(intent);
             if (mRealServices.containsKey(key)) {
                 return mServiceTokens.get(key);
             } else {
@@ -55,19 +58,52 @@ public class HookService_ServiceManager {
         return token;
     }
 
-    public static Object stopService(Intent intent) {
+    public static void doStopRealService(Object token) {
+        if (mStopServices.containsKey(token)) {
+            ArrayList<String> stops = mStopServices.get(token);
+            for (int i = 0; i < stops.size(); i++) {
+                doStopService(stops.get(i));
+            }
+            stops.clear();
+        }
+    }
+
+
+    public static void addStopService(Intent intent) {
         if (intent.hasExtra(ApkConstant.EXTRA_APK_PATH)) {
-            String key = HookService_Component.getKey(intent);
+            String key = HookComponent_Service.getKey(intent);
             if (mRealServices.containsKey(key)) {
                 Object stoken = mServiceTokens.get(key);
-                Service rawService = mRealServices.get(key);
-                mRealServices.remove(key);
-                mServiceTokens.remove(key);
-                rawService.onDestroy();
-                return stoken;
+                if (mStopServices.containsKey(stoken)) {
+                    mStopServices.get(stoken).add(key);
+                } else {
+                    ArrayList<String> stops = new ArrayList<String>();
+                    stops.add(key);
+                    mStopServices.put(stoken, stops);
+                }
+                resetProxyService(stoken);
             }
         }
-        return null;
+    }
+
+    private static void doStopService(String key) {
+        if (mRealServices.containsKey(key)) {
+            Service rawService = mRealServices.get(key);
+            rawService.onDestroy();
+            mServiceTokens.remove(key);
+            mRealServices.remove(key);
+        }
+    }
+
+    public static boolean onUnbindService(Intent intent) {
+        if (intent.hasExtra(ApkConstant.EXTRA_APK_PATH)) {
+            String key = HookComponent_Service.getKey(intent);
+            if (mRealServices.containsKey(key)) {
+                Service rawService = mRealServices.get(key);
+                return rawService.onUnbind(intent);
+            }
+        }
+        return false;
     }
 
     public static Object resetProxyService(Object token) {
