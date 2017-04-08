@@ -13,8 +13,9 @@ public class HookHandle_BindService {
     private HookHandle_BindService() {
     }
 
-    public static void handleBindService(Handler handler, Message msg) {
+    public static void handleBindService(Handler hnadler, Message msg) {
         ApkLogger.get().debug("hook handleBindService", null);
     }
+
 
 }
