@@ -8,9 +8,8 @@ import android.content.ServiceConnection;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 
-import com.liangmayong.apkbox.core.classloader.ApkClassLoader;
+import com.liangmayong.apkbox.core.ApkLoaded;
 import com.liangmayong.apkbox.core.constant.ApkConstant;
-import com.liangmayong.apkbox.core.resources.ApkResources;
 import com.liangmayong.apkbox.hook.service.HookService_Component;
 import com.liangmayong.apkbox.reflect.ApkMethod;
 
@@ -24,17 +23,31 @@ public final class ApkContext extends Application {
      * get
      *
      * @param baseContext baseContext
+     * @param loaded      loaded
+     * @return context
+     */
+    public static Context get(Context baseContext, ApkLoaded loaded) {
+        ApkContext context = new ApkContext(baseContext);
+        context.loaded = loaded;
+        ApkContextModifier.setOuterContext(baseContext, context);
+        return context;
+    }
+
+    /**
+     * get
+     *
+     * @param baseContext baseContext
      * @param apkPath     apkPath
      * @return context
      */
     public static Context get(Context baseContext, String apkPath) {
         ApkContext context = new ApkContext(baseContext);
-        context.apkPath = apkPath;
+        context.loaded = ApkLoaded.get(baseContext, apkPath);
         ApkContextModifier.setOuterContext(baseContext, context);
         return context;
     }
 
-    private String apkPath = "";
+    private ApkLoaded loaded = null;
     private Resources.Theme mTheme = null;
 
     private ApkContext(Context base) {
@@ -56,7 +69,7 @@ public final class ApkContext extends Application {
     @Override
     public ClassLoader getClassLoader() {
         if (isApkLoaded()) {
-            return ApkClassLoader.getClassloader(apkPath);
+            return loaded.getClassLoader();
         }
         return super.getClassLoader();
     }
@@ -64,7 +77,7 @@ public final class ApkContext extends Application {
     @Override
     public AssetManager getAssets() {
         if (isApkLoaded()) {
-            return ApkResources.getAssets(getBaseContext(), apkPath);
+            return loaded.getAssets(getBaseContext());
         }
         return super.getAssets();
     }
@@ -72,7 +85,7 @@ public final class ApkContext extends Application {
     @Override
     public Resources getResources() {
         if (isApkLoaded()) {
-            return ApkResources.getResources(getBaseContext(), apkPath);
+            return loaded.getResources(getBaseContext());
         }
         return super.getResources();
     }
@@ -95,7 +108,7 @@ public final class ApkContext extends Application {
     }
 
     public boolean isApkLoaded() {
-        if (apkPath != null && !"".equals(apkPath)) {
+        if (loaded != null) {
             return true;
         }
         return false;
@@ -104,7 +117,7 @@ public final class ApkContext extends Application {
     @Override
     public ComponentName startService(Intent service) {
         if (isApkLoaded()) {
-            service.putExtra(ApkConstant.EXTRA_APK_PATH, apkPath);
+            service.putExtra(ApkConstant.EXTRA_APK_PATH, loaded.getApkPath());
         }
         service = HookService_Component.modify(service);
         return super.startService(service);
@@ -113,7 +126,7 @@ public final class ApkContext extends Application {
     @Override
     public boolean stopService(Intent name) {
         if (isApkLoaded()) {
-            name.putExtra(ApkConstant.EXTRA_APK_PATH, apkPath);
+            name.putExtra(ApkConstant.EXTRA_APK_PATH, loaded.getApkPath());
         }
         name = HookService_Component.modify(name);
         return super.stopService(name);
@@ -122,7 +135,7 @@ public final class ApkContext extends Application {
     @Override
     public boolean bindService(Intent service, ServiceConnection conn, int flags) {
         if (isApkLoaded()) {
-            service.putExtra(ApkConstant.EXTRA_APK_PATH, apkPath);
+            service.putExtra(ApkConstant.EXTRA_APK_PATH, loaded.getApkPath());
         }
         service = HookService_Component.modify(service);
         return super.bindService(service, conn, flags);

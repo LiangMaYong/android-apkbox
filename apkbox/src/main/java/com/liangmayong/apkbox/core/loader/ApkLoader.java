@@ -9,6 +9,8 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 
 import com.liangmayong.apkbox.core.ApkLoaded;
+import com.liangmayong.apkbox.core.context.ApkContext;
+import com.liangmayong.apkbox.core.context.ApkContextModifier;
 import com.liangmayong.apkbox.core.resources.ApkNative;
 import com.liangmayong.apkbox.core.resources.ApkResources;
 import com.liangmayong.apkbox.core.resources.ApkSignture;
@@ -49,6 +51,7 @@ public class ApkLoader {
                     }
                     mConstructor.setAccessible(true);
                     ApkLoaded loaded = mConstructor.newInstance();
+                    loaded.setHostContext(context.getApplicationContext());
                     ApplicationInfo info = pkg.applicationInfo;
                     if (Build.VERSION.SDK_INT >= 8) {
                         info.sourceDir = apkPath;
@@ -72,11 +75,11 @@ public class ApkLoader {
                     loaded.setConfigures(ApkConfigure.getConfigure(ApkResources.getAssets(context, apkPath)));
                     loaded.setFilters(ApkManifestParser.getIntentFilter(apkPath));
                     loaded.setApkLauncher(getMainActivityName(loaded, info.packageName));
+                    loaded.setPermissions(parserPermissions(context));
                     ApkReceiver.unregisterReceiver(loaded);
                     loaded.setApkApplication(createApplication(context, loaded, applicationName));
-                    ApkReceiver.registerReceiver(context, loaded, parserPermissions(context));
+                    ApkReceiver.registerReceiver(context, loaded);
                     ApkLogger.get().debug("Load apk success :" + loaded, null);
-                    parserPermissions(context);
                     return loaded;
                 } else {
                     ApkLogger.get().debug("Load apk fail : package info is null", null);
@@ -133,6 +136,7 @@ public class ApkLoader {
         return parserClassName(packageName, main);
     }
 
+
     /**
      * createApplication
      *
@@ -142,16 +146,19 @@ public class ApkLoader {
      */
     private static Application createApplication(Context context, ApkLoaded loaded, String applicationName) {
         Application application = null;
-        Context ctx = loaded.getContext(context);
+        Context ctx = ApkContext.get(context, loaded);
         try {
             if (ApkProcess.validateApkProcessName(context)) {
                 application = (Application) loaded.getClassLoader().loadClass(applicationName)
                         .newInstance();
+
                 ApkMethod method = new ApkMethod(Application.class, application, "attach", Context.class);
                 method.invoke(ctx);
 
                 ApkReflect.setField(Application.class, application, "mBase", ctx);
                 application.onCreate();
+
+                ApkContextModifier.setOuterContext(context, application);
             } else {
                 application = (Application) ctx;
             }

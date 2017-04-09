@@ -49,7 +49,7 @@ public final class ApkReceiver {
      * @param context context
      * @param loaded  loaded
      */
-    public static void registerReceiver(Context context, ApkLoaded loaded, List<String> permissions) {
+    public static void registerReceiver(Context context, ApkLoaded loaded) {
         if (!ApkProcess.validateApkProcessName(context)) {
             return;
         }

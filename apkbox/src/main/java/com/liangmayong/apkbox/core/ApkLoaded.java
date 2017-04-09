@@ -13,7 +13,6 @@ import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.liangmayong.apkbox.core.classloader.ApkClassLoader;
 import com.liangmayong.apkbox.core.constant.ApkConstant;
@@ -23,6 +22,7 @@ import com.liangmayong.apkbox.core.resources.ApkModel;
 import com.liangmayong.apkbox.core.resources.ApkResources;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -62,6 +62,7 @@ public class ApkLoaded {
     private ApkLoaded() {
     }
 
+    private Context hostContext = null;
     private String apkPath = "";
     private String apkName = "";
     private String apkLauncher = "";
@@ -72,8 +73,17 @@ public class ApkLoaded {
     private int apkVersionCode = 1;
     private String apkVersionName = "";
     private PackageManager apkPackageManager = null;
+    private List<String> permissions = null;
     private final Map<String, String> configures = new HashMap<>();
     private final Map<String, IntentFilter> filters = new HashMap<>();
+
+    public void setHostContext(Context hostContext) {
+        this.hostContext = hostContext;
+    }
+
+    public Context getHostContext() {
+        return hostContext;
+    }
 
     public String getApkPath() {
         return apkPath;
@@ -99,12 +109,12 @@ public class ApkLoaded {
         this.apkLauncher = apkLauncher;
     }
 
-    public Application getApkApplication() {
-        return apkApplication;
+    public void setApkApplication(Application application) {
+        this.apkApplication = application;
     }
 
-    public void setApkApplication(Application apkApplication) {
-        this.apkApplication = apkApplication;
+    public Application getApkApplication() {
+        return apkApplication;
     }
 
     public Drawable getApkIcon() {
@@ -153,6 +163,14 @@ public class ApkLoaded {
 
     public void setApkPackageManager(PackageManager apkPackageManager) {
         this.apkPackageManager = apkPackageManager;
+    }
+
+    public void setPermissions(List<String> permissions) {
+        this.permissions = permissions;
+    }
+
+    public List<String> getPermissions() {
+        return permissions;
     }
 
     public Map<String, String> getConfigures() {
@@ -298,7 +316,8 @@ public class ApkLoaded {
     @Override
     public String toString() {
         return "ApkLoaded{" +
-                "apkPath='" + apkPath + '\'' +
+                "hostContext=" + hostContext +
+                ", apkPath='" + apkPath + '\'' +
                 ", apkName='" + apkName + '\'' +
                 ", apkLauncher='" + apkLauncher + '\'' +
                 ", apkApplication=" + apkApplication +
@@ -308,6 +327,7 @@ public class ApkLoaded {
                 ", apkVersionCode=" + apkVersionCode +
                 ", apkVersionName='" + apkVersionName + '\'' +
                 ", apkPackageManager=" + apkPackageManager +
+                ", permissions=" + permissions +
                 ", configures=" + configures +
                 ", filters=" + filters +
                 '}';

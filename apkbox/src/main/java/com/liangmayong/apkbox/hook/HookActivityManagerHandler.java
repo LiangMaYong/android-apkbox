@@ -25,7 +25,7 @@ public class HookActivityManagerHandler implements InvocationHandler {
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         ApkLogger.get().debug("Hook ---------- proxy " + method.getName(), null);
-        if ("startActivity".equals(method.getName())) {
+        if (method.getName().contains("startActivity")) {
             return HookProxy_Activity.invoke(mBase, method, args);
         } else if ("startService".equals(method.getName())
                 || "stopService".equals(method.getName())

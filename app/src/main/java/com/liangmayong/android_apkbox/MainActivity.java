@@ -22,7 +22,7 @@ import java.io.OutputStream;
 public class MainActivity extends AppCompatActivity {
 
     private ApkLoaded loaded = null;
-    private String appName = "apkplugin.apk";
+    private String appName = "app.apk";
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
