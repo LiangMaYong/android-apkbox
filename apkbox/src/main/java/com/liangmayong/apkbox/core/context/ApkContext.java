@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
+import android.util.Log;
 
 import com.liangmayong.apkbox.core.ApkLoaded;
 import com.liangmayong.apkbox.core.constant.ApkConstant;
@@ -100,7 +101,7 @@ public final class ApkContext extends Application {
         if (isApkLoaded()) {
             if (mTheme == null) {
                 mTheme = getResources().newTheme();
-                mTheme.setTo(super.getTheme());
+                mTheme.setTo(getBaseContext().getTheme());
             }
             return mTheme;
         }

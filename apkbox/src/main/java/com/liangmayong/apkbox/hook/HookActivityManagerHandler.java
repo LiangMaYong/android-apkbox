@@ -5,7 +5,6 @@ import android.os.Build;
 
 import com.liangmayong.apkbox.hook.proxy.HookProxy_Activity;
 import com.liangmayong.apkbox.hook.proxy.HookProxy_Service;
-import com.liangmayong.apkbox.utils.ApkLogger;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -24,7 +23,6 @@ public class HookActivityManagerHandler implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        ApkLogger.get().debug("Hook ---------- proxy " + method.getName(), null);
         if (method.getName().contains("startActivity")) {
             return HookProxy_Activity.invoke(mBase, method, args);
         } else if ("startService".equals(method.getName())

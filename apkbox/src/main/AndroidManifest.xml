@@ -89,6 +89,36 @@
         <service
             android:name="com.liangmayong.apkbox.proxy.service.Proxy10Service"
             android:process="@string/apkbox_process" />
+        <service
+            android:name="com.liangmayong.apkbox.proxy.service.Proxy11Service"
+            android:process="@string/apkbox_process" />
+        <service
+            android:name="com.liangmayong.apkbox.proxy.service.Proxy12Service"
+            android:process="@string/apkbox_process" />
+        <service
+            android:name="com.liangmayong.apkbox.proxy.service.Proxy13Service"
+            android:process="@string/apkbox_process" />
+        <service
+            android:name="com.liangmayong.apkbox.proxy.service.Proxy14Service"
+            android:process="@string/apkbox_process" />
+        <service
+            android:name="com.liangmayong.apkbox.proxy.service.Proxy15Service"
+            android:process="@string/apkbox_process" />
+        <service
+            android:name="com.liangmayong.apkbox.proxy.service.Proxy16Service"
+            android:process="@string/apkbox_process" />
+        <service
+            android:name="com.liangmayong.apkbox.proxy.service.Proxy17Service"
+            android:process="@string/apkbox_process" />
+        <service
+            android:name="com.liangmayong.apkbox.proxy.service.Proxy18Service"
+            android:process="@string/apkbox_process" />
+        <service
+            android:name="com.liangmayong.apkbox.proxy.service.Proxy19Service"
+            android:process="@string/apkbox_process" />
+        <service
+            android:name="com.liangmayong.apkbox.proxy.service.Proxy20Service"
+            android:process="@string/apkbox_process" />
     </application>
 
 </manifest>

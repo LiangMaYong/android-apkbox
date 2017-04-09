@@ -30,9 +30,9 @@ public class ApkActivityModifier {
         if (loaded != null) {
             modifyApplication(target, loaded);
             modifyTitle(target, loaded);
-            modifyResources(target, loaded);
+            Resources resources = modifyResources(target, loaded);
             Context context = modifyContext(target, loaded);
-            modifyActivityInfo(context, target, loaded);
+            modifyActivityInfo(context, resources, target, loaded);
         }
     }
 
@@ -43,11 +43,12 @@ public class ApkActivityModifier {
         }
     }
 
-    private static void modifyResources(Activity target, ApkLoaded loaded) {
+    private static Resources modifyResources(Activity target, ApkLoaded loaded) {
         Resources resources = loaded.getResources(target);
         if (resources != null) {
             ApkReflect.setField(target.getClass(), target, "mResources", resources);
         }
+        return resources;
     }
 
     private static void modifyTitle(Activity target, ApkLoaded loaded) {
@@ -65,11 +66,11 @@ public class ApkActivityModifier {
         return context;
     }
 
-    private static void modifyActivityInfo(Context context, Activity target, ApkLoaded loaded) {
+    private static void modifyActivityInfo(Context context, Resources resources, Activity target, ApkLoaded loaded) {
         ActivityInfo activityInfo = loaded.getActivityInfo(target.getClass().getName());
         if (activityInfo != null) {
             applyActivityInfo(target, activityInfo);
-            applyTheme(context, target, activityInfo);
+            applyTheme(context, target, activityInfo, resources);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 Intent intent = target.getIntent();
                 if (intent != null && target.isTaskRoot()) {
@@ -103,13 +104,18 @@ public class ApkActivityModifier {
         }
     }
 
-    private static void applyTheme(Context context, Activity target, ActivityInfo activityInfo) {
+    private static void applyTheme(Context context, Activity target, ActivityInfo activityInfo, Resources resources) {
         if (activityInfo != null) {
             int resTheme = activityInfo.getThemeResource();
             ApkReflect.setField(target.getClass(), target, "mTheme", context.getTheme());
             if (resTheme != 0) {
                 context.getTheme().applyStyle(resTheme, true);
             }
+        } else {
+            Resources.Theme mTheme = resources.newTheme();
+            mTheme.setTo(target.getBaseContext().getTheme());
+            ApkReflect.setField(target.getClass(), target, "mTheme", mTheme);
         }
     }
+
 }

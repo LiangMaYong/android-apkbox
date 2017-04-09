@@ -16,7 +16,6 @@ import com.liangmayong.apkbox.proxy.activity.Proxy6Activity;
 import com.liangmayong.apkbox.proxy.activity.Proxy7Activity;
 import com.liangmayong.apkbox.proxy.activity.Proxy8Activity;
 import com.liangmayong.apkbox.proxy.activity.Proxy9Activity;
-import com.liangmayong.apkbox.utils.ApkLogger;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -77,11 +76,9 @@ public class HookComponent_Activity {
             }
             Intent newIntent = new Intent();
             ComponentName componentName = new ComponentName(raw.getComponent().getPackageName(), clazz.getName());
-            ApkLogger.get().debug("Activity proxy:" + clazz.getName(), null);
-            ApkLogger.get().debug("Activity proxy:" + key, null);
             newIntent.setComponent(componentName);
             newIntent.putExtra(ApkConstant.EXTRA_APK_TARGET_INTENT, raw);
-            newIntent.putExtra(ApkConstant.EXTRA_APK_MODIFIED, 1);
+            newIntent.putExtra(ApkConstant.EXTRA_APK_MODIFIED, clazz.getName());
             return newIntent;
         }
         return raw;

@@ -17,9 +17,7 @@ import com.liangmayong.apkbox.proxy.service.Proxy6Service;
 import com.liangmayong.apkbox.proxy.service.Proxy7Service;
 import com.liangmayong.apkbox.proxy.service.Proxy8Service;
 import com.liangmayong.apkbox.proxy.service.Proxy9Service;
-import com.liangmayong.apkbox.utils.ApkLogger;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -81,7 +79,7 @@ public class HookService_Component {
             ComponentName componentName = new ComponentName(raw.getComponent().getPackageName(), clazz.getName());
             newIntent.setComponent(componentName);
             newIntent.putExtra(ApkConstant.EXTRA_APK_TARGET_INTENT, raw);
-            newIntent.putExtra(ApkConstant.EXTRA_APK_MODIFIED, 1);
+            newIntent.putExtra(ApkConstant.EXTRA_APK_MODIFIED, clazz.getName());
             return newIntent;
         }
         return raw;
