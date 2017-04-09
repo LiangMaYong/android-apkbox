@@ -7,7 +7,17 @@ import com.liangmayong.apkbox.core.constant.ApkConstant;
 import com.liangmayong.apkbox.hook.component.HookComponent_Activity;
 import com.liangmayong.apkbox.proxy.service.Proxy0Service;
 import com.liangmayong.apkbox.proxy.service.Proxy10Service;
+import com.liangmayong.apkbox.proxy.service.Proxy11Service;
+import com.liangmayong.apkbox.proxy.service.Proxy12Service;
+import com.liangmayong.apkbox.proxy.service.Proxy13Service;
+import com.liangmayong.apkbox.proxy.service.Proxy14Service;
+import com.liangmayong.apkbox.proxy.service.Proxy15Service;
+import com.liangmayong.apkbox.proxy.service.Proxy16Service;
+import com.liangmayong.apkbox.proxy.service.Proxy17Service;
+import com.liangmayong.apkbox.proxy.service.Proxy18Service;
+import com.liangmayong.apkbox.proxy.service.Proxy19Service;
 import com.liangmayong.apkbox.proxy.service.Proxy1Service;
+import com.liangmayong.apkbox.proxy.service.Proxy20Service;
 import com.liangmayong.apkbox.proxy.service.Proxy2Service;
 import com.liangmayong.apkbox.proxy.service.Proxy3Service;
 import com.liangmayong.apkbox.proxy.service.Proxy404Service;
@@ -44,6 +54,16 @@ public class HookService_Component {
             Proxy8Service.class,
             Proxy9Service.class,
             Proxy10Service.class,
+            Proxy11Service.class,
+            Proxy12Service.class,
+            Proxy13Service.class,
+            Proxy14Service.class,
+            Proxy15Service.class,
+            Proxy16Service.class,
+            Proxy17Service.class,
+            Proxy18Service.class,
+            Proxy19Service.class,
+            Proxy20Service.class,
     };
     // index
     private static int index = 0;
