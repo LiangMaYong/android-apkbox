@@ -1,5 +1,6 @@
 package com.liangmayong.android_apkbox;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,10 +20,10 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
 
     private ApkLoaded loaded = null;
-    private String appName = "app.apk";
+    private String appName = "PLPlayer.apk";
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {

@@ -105,16 +105,15 @@ public class ApkActivityModifier {
     }
 
     private static void applyTheme(Context context, Activity target, ActivityInfo activityInfo, Resources resources) {
+        Resources.Theme mTheme = resources.newTheme();
+        Resources.Theme theme = target.getTheme();
+        mTheme.setTo(theme);
+        ApkReflect.setField(target.getClass(), target, "mTheme", mTheme);
         if (activityInfo != null) {
             int resTheme = activityInfo.getThemeResource();
-            ApkReflect.setField(target.getClass(), target, "mTheme", context.getTheme());
             if (resTheme != 0) {
-                context.getTheme().applyStyle(resTheme, true);
+                mTheme.applyStyle(resTheme, true);
             }
-        } else {
-            Resources.Theme mTheme = resources.newTheme();
-            mTheme.setTo(target.getBaseContext().getTheme());
-            ApkReflect.setField(target.getClass(), target, "mTheme", mTheme);
         }
     }
 

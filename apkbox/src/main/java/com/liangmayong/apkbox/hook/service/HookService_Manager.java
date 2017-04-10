@@ -4,6 +4,7 @@ import android.app.Application;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
@@ -61,7 +62,7 @@ public class HookService_Manager {
         }
     }
 
-    public static int onStartCommand(Service service, Intent intent, int flags, int startId) {
+    public static int onStartCommandService(Service service, Intent intent, int flags, int startId) {
         realCreateService(service, intent);
         if (mRealServices.containsKey(service)) {
             Map<String, Service> serviceMap = mRealServices.get(service);
@@ -79,6 +80,42 @@ public class HookService_Manager {
             String key = HookService_Component.getKey(intent);
             if (serviceMap.containsKey(key)) {
                 serviceMap.get(key).onRebind(intent);
+            }
+        }
+    }
+
+    public static void onConfigurationChangedService(Service service, Configuration newConfig) {
+        if (mRealServices.containsKey(service)) {
+            Map<String, Service> serviceMap = mRealServices.get(service);
+            for (Map.Entry<String, Service> entry :
+                    serviceMap.entrySet()) {
+                entry.getValue().onConfigurationChanged(newConfig);
+            }
+        }
+    }
+
+    public static void onTrimMemoryService(Service service, int level) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            return;
+        }
+        if (mRealServices.containsKey(service)) {
+            Map<String, Service> serviceMap = mRealServices.get(service);
+            for (Map.Entry<String, Service> entry :
+                    serviceMap.entrySet()) {
+                entry.getValue().onTrimMemory(level);
+            }
+        }
+    }
+
+    public static void onTaskRemovedService(Service service, Intent rootIntent) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            return;
+        }
+        if (mRealServices.containsKey(service)) {
+            Map<String, Service> serviceMap = mRealServices.get(service);
+            for (Map.Entry<String, Service> entry :
+                    serviceMap.entrySet()) {
+                entry.getValue().onTaskRemoved(rootIntent);
             }
         }
     }

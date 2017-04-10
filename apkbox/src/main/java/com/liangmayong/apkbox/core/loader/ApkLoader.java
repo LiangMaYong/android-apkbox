@@ -6,6 +6,7 @@ import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ProviderInfo;
 import android.os.Build;
 
 import com.liangmayong.apkbox.core.ApkLoaded;
@@ -20,6 +21,8 @@ import com.liangmayong.apkbox.utils.ApkLogger;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -75,7 +78,8 @@ public class ApkLoader {
                     loaded.setConfigures(ApkConfigure.getConfigure(ApkResources.getAssets(context, apkPath)));
                     loaded.setFilters(ApkManifestParser.getIntentFilter(apkPath));
                     loaded.setApkLauncher(getMainActivityName(loaded, info.packageName));
-                    loaded.setPermissions(parserPermissions(context));
+                    loaded.setPermissions(parserPermissions(context, apkPath));
+                    loaded.setProviders(parseProviders(apkPath));
                     ApkReceiver.unregisterReceiver(loaded);
                     loaded.setApkApplication(createApplication(context, loaded, applicationName));
                     ApkReceiver.registerReceiver(context, loaded);
@@ -169,11 +173,11 @@ public class ApkLoader {
         return application;
     }
 
-    private static List<String> parserPermissions(Context context) {
+    private static List<String> parserPermissions(Context context, String apkPath) {
         List<String> permissions = new ArrayList<>();
         try {
             PackageManager pm = context.getPackageManager();
-            PackageInfo pkgInfo = pm.getPackageInfo(context.getPackageName(), PackageManager.GET_PERMISSIONS);
+            PackageInfo pkgInfo = pm.getPackageArchiveInfo(apkPath, PackageManager.GET_PERMISSIONS);
             String[] perms = pkgInfo.requestedPermissions;
             if (perms != null) {
                 for (String permName : perms) {
@@ -183,5 +187,45 @@ public class ApkLoader {
         } catch (Exception e) {
         }
         return permissions;
+    }
+
+    /**
+     * parseProviders
+     *
+     * @param apkPath apkPath
+     * @return providers
+     */
+    public static List<ProviderInfo> parseProviders(String apkPath) {
+        List<ProviderInfo> ret = new ArrayList<>();
+        File apkFile = new File(apkPath);
+        if (apkFile.exists()) {
+            try {
+                Class<?> packageParserClass = Class.forName("android.content.pm.PackageParser");
+                Method parsePackageMethod = packageParserClass.getDeclaredMethod("parsePackage", File.class, int.class);
+
+                Object packageParser = packageParserClass.newInstance();
+
+                Object packageObj = parsePackageMethod.invoke(packageParser, apkFile, PackageManager.GET_PROVIDERS);
+
+                Field providersField = packageObj.getClass().getDeclaredField("providers");
+                List providers = (List) providersField.get(packageObj);
+
+                Class<?> packageParser$ProviderClass = Class.forName("android.content.pm.PackageParser$Provider");
+                Class<?> packageUserStateClass = Class.forName("android.content.pm.PackageUserState");
+                Class<?> userHandler = Class.forName("android.os.UserHandle");
+                Method getCallingUserIdMethod = userHandler.getDeclaredMethod("getCallingUserId");
+                int userId = (Integer) getCallingUserIdMethod.invoke(null);
+                Object defaultUserState = packageUserStateClass.newInstance();
+
+                Method generateProviderInfo = packageParserClass.getDeclaredMethod("generateProviderInfo",
+                        packageParser$ProviderClass, int.class, packageUserStateClass, int.class);
+                for (Object service : providers) {
+                    ProviderInfo info = (ProviderInfo) generateProviderInfo.invoke(packageParser, service, 0, defaultUserState, userId);
+                    ret.add(info);
+                }
+            } catch (Exception e) {
+            }
+        }
+        return ret;
     }
 }

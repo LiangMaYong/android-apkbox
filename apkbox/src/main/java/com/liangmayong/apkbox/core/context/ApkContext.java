@@ -2,15 +2,18 @@ package com.liangmayong.apkbox.core.context;
 
 import android.app.Application;
 import android.content.ComponentName;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
-import android.util.Log;
+import android.os.Bundle;
+import android.view.LayoutInflater;
 
 import com.liangmayong.apkbox.core.ApkLoaded;
 import com.liangmayong.apkbox.core.constant.ApkConstant;
+import com.liangmayong.apkbox.core.resources.ApkLayoutInflater;
 import com.liangmayong.apkbox.hook.service.HookService_Component;
 import com.liangmayong.apkbox.reflect.ApkMethod;
 
@@ -50,6 +53,7 @@ public final class ApkContext extends Application {
 
     private ApkLoaded loaded = null;
     private Resources.Theme mTheme = null;
+    private ContentResolver contentResolver = null;
 
     private ApkContext(Context base) {
         try {
@@ -124,6 +128,23 @@ public final class ApkContext extends Application {
         return super.startService(service);
     }
 
+
+    @Override
+    public void startActivity(Intent intent) {
+        if (isApkLoaded()) {
+            intent.putExtra(ApkConstant.EXTRA_APK_PATH, loaded.getApkPath());
+        }
+        super.startActivity(intent);
+    }
+
+    @Override
+    public void startActivity(Intent intent, Bundle options) {
+        if (isApkLoaded()) {
+            intent.putExtra(ApkConstant.EXTRA_APK_PATH, loaded.getApkPath());
+        }
+        super.startActivity(intent, options);
+    }
+
     @Override
     public boolean stopService(Intent name) {
         if (isApkLoaded()) {
@@ -147,4 +168,20 @@ public final class ApkContext extends Application {
         receiverPermission = getPackageName() + ".permission.APK_RECEIVE";
         super.sendBroadcast(intent, receiverPermission);
     }
+
+    @Override
+    public void sendBroadcast(Intent intent) {
+        sendBroadcast(intent, "");
+    }
+
+    @Override
+    public Object getSystemService(String name) {
+        if (Context.LAYOUT_INFLATER_SERVICE.equals(name)) {
+            return new ApkLayoutInflater((LayoutInflater) super.getSystemService(name));
+        } else if (ApkConstant.SERVICE_APK_BANDLE.equals(name)) {
+            return null;
+        }
+        return super.getSystemService(name);
+    }
+
 }

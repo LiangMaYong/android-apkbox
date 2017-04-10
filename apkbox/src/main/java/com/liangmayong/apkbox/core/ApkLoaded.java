@@ -9,6 +9,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ProviderInfo;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
@@ -74,6 +75,7 @@ public class ApkLoaded {
     private String apkVersionName = "";
     private PackageManager apkPackageManager = null;
     private List<String> permissions = null;
+    private List<ProviderInfo> providers = null;
     private final Map<String, String> configures = new HashMap<>();
     private final Map<String, IntentFilter> filters = new HashMap<>();
 
@@ -171,6 +173,14 @@ public class ApkLoaded {
 
     public List<String> getPermissions() {
         return permissions;
+    }
+
+    public List<ProviderInfo> getProviders() {
+        return providers;
+    }
+
+    public void setProviders(List<ProviderInfo> providers) {
+        this.providers = providers;
     }
 
     public Map<String, String> getConfigures() {
@@ -328,6 +338,7 @@ public class ApkLoaded {
                 ", apkVersionName='" + apkVersionName + '\'' +
                 ", apkPackageManager=" + apkPackageManager +
                 ", permissions=" + permissions +
+                ", providers=" + providers +
                 ", configures=" + configures +
                 ", filters=" + filters +
                 '}';

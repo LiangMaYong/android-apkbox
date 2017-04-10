@@ -2,6 +2,7 @@ package com.liangmayong.apkbox.proxy.service;
 
 import android.app.Service;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Binder;
 import android.os.IBinder;
 
@@ -44,10 +45,10 @@ public class Proxy404Service extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        ApkLogger.get().debug(TAG + " - onStartCommand", null);
+        ApkLogger.get().debug(TAG + " - onStartCommandService", null);
         if (intent != null && intent.hasExtra(ApkConstant.EXTRA_APK_TARGET_INTENT)) {
             Intent target = intent.getParcelableExtra(ApkConstant.EXTRA_APK_TARGET_INTENT);
-            return HookService_Manager.onStartCommand(this, target, flags, startId);
+            return HookService_Manager.onStartCommandService(this, target, flags, startId);
         }
         return super.onStartCommand(intent, flags, startId);
     }
@@ -81,10 +82,31 @@ public class Proxy404Service extends Service {
     }
 
     @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        ApkLogger.get().debug(TAG + " - onConfigurationChanged", null);
+        super.onConfigurationChanged(newConfig);
+        HookService_Manager.onConfigurationChangedService(this, newConfig);
+    }
+
+    @Override
     public void onLowMemory() {
         ApkLogger.get().debug(TAG + " - onLowMemory", null);
         super.onLowMemory();
         HookService_Manager.onLowMemoryService(this);
+    }
+
+    @Override
+    public void onTrimMemory(int level) {
+        ApkLogger.get().debug(TAG + " - onTrimMemory", null);
+        super.onTrimMemory(level);
+        HookService_Manager.onTrimMemoryService(this, level);
+    }
+
+    @Override
+    public void onTaskRemoved(Intent rootIntent) {
+        ApkLogger.get().debug(TAG + " - onTaskRemoved", null);
+        super.onTaskRemoved(rootIntent);
+        HookService_Manager.onTaskRemovedService(this, rootIntent);
     }
 
     private class ProxyBinder extends Binder {
@@ -93,5 +115,6 @@ public class Proxy404Service extends Service {
         public String toString() {
             return Proxy404Service.this.getClass().getName() + "$" + super.toString();
         }
+
     }
 }

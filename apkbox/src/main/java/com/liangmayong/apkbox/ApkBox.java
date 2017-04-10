@@ -3,6 +3,7 @@ package com.liangmayong.apkbox;
 import android.app.Application;
 
 import com.liangmayong.apkbox.hook.ApkHook;
+import com.liangmayong.apkbox.hook.listener.OnActivityListener;
 
 /**
  * Created by LiangMaYong on 2017/3/29.
@@ -52,26 +53,23 @@ public class ApkBox {
         return true;
     }
 
-
-    /**
-     * parent classloader
-     */
+    // activityListener
+    private OnActivityListener activityListener;
+    // parent classloader
     private ClassLoader supportClassLoader = null;
 
-    /**
-     * setSupportClassLoader
-     *
-     * @param supportClassLoader supportClassLoader
-     */
+    public void setActivityListener(OnActivityListener listener) {
+        this.activityListener = listener;
+    }
+
+    public OnActivityListener getActivityListener() {
+        return activityListener;
+    }
+
     public void setSupportClassLoader(ClassLoader supportClassLoader) {
         this.supportClassLoader = supportClassLoader;
     }
 
-    /**
-     * getSupportClassloader
-     *
-     * @return supportClassLoader
-     */
     public ClassLoader getSupportClassloader() {
         return this.supportClassLoader;
     }
