@@ -11,9 +11,11 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.view.ContextThemeWrapper;
 
 import com.liangmayong.apkbox.core.ApkLoaded;
 import com.liangmayong.apkbox.reflect.ApkReflect;
+import com.liangmayong.apkbox.utils.ApkLogger;
 
 import java.lang.reflect.Field;
 
@@ -30,9 +32,9 @@ public class ApkActivityModifier {
         if (loaded != null) {
             modifyApplication(target, loaded);
             modifyTitle(target, loaded);
-            Resources resources = modifyResources(target, loaded);
-            Context context = modifyContext(target, loaded);
-            modifyActivityInfo(context, resources, target, loaded);
+            modifyResources(target, loaded);
+            modifyContext(target, loaded);
+            modifyActivityInfo(target, loaded);
         }
     }
 
@@ -66,11 +68,11 @@ public class ApkActivityModifier {
         return context;
     }
 
-    private static void modifyActivityInfo(Context context, Resources resources, Activity target, ApkLoaded loaded) {
+    private static void modifyActivityInfo(Activity target, ApkLoaded loaded) {
         ActivityInfo activityInfo = loaded.getActivityInfo(target.getClass().getName());
         if (activityInfo != null) {
             applyActivityInfo(target, activityInfo);
-            applyTheme(context, target, activityInfo, resources);
+            applyTheme(target, activityInfo);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 Intent intent = target.getIntent();
                 if (intent != null && target.isTaskRoot()) {
@@ -87,6 +89,8 @@ public class ApkActivityModifier {
                     && activityInfo.screenOrientation != ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED) {
                 target.setRequestedOrientation(activityInfo.screenOrientation);
             }
+        } else {
+            ApkLogger.get().debug("getActivityInfo fail : " + target.getClass().getName(), null);
         }
     }
 
@@ -96,24 +100,22 @@ public class ApkActivityModifier {
             field_mActivityInfo = Activity.class.getDeclaredField("mActivityInfo");
             field_mActivityInfo.setAccessible(true);
         } catch (Exception e) {
+            ApkLogger.get().debug("applyActivityInfo fail", e);
             return;
         }
         try {
             field_mActivityInfo.set(activity, activityInfo);
         } catch (Exception e) {
+            ApkLogger.get().debug("applyActivityInfo fail", e);
         }
     }
 
-    private static void applyTheme(Context context, Activity target, ActivityInfo activityInfo, Resources resources) {
-        Resources.Theme mTheme = resources.newTheme();
-        Resources.Theme theme = target.getTheme();
-        mTheme.setTo(theme);
-        ApkReflect.setField(target.getClass(), target, "mTheme", mTheme);
-        if (activityInfo != null) {
-            int resTheme = activityInfo.getThemeResource();
-            if (resTheme != 0) {
-                mTheme.applyStyle(resTheme, true);
-            }
+    private static void applyTheme(Activity target, ActivityInfo activityInfo) {
+        try {
+            ContextThemeWrapper contextThemeWrapper = new ContextThemeWrapper(target, activityInfo.getThemeResource());
+            ApkReflect.setField(target.getClass(), target, "mTheme", contextThemeWrapper.getTheme());
+        } catch (Exception e) {
+            ApkLogger.get().debug("applyTheme fail", e);
         }
     }
 
