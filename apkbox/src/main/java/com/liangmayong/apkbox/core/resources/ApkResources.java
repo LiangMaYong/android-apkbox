@@ -56,10 +56,13 @@ public final class ApkResources extends Resources {
             return RESOURCES.get(key);
         }
         AssetManager assetManager = getAssets(context, apkPath);
-        ApkResources apResources = new ApkResources(assetManager, context.getResources().getDisplayMetrics(), context.getResources().getConfiguration());
-        RESOURCES.put(key, apResources);
-        return apResources;
+        ApkResources apkResources = new ApkResources(assetManager, context.getResources().getDisplayMetrics(), context.getResources().getConfiguration(), apkPath, context.getResources());
+        RESOURCES.put(key, apkResources);
+        return apkResources;
     }
+
+    private String apkPath = "";
+    private Resources hostResources = null;
 
     /**
      * ApkResources
@@ -68,8 +71,17 @@ public final class ApkResources extends Resources {
      * @param metrics metrics
      * @param config  config
      */
-    private ApkResources(AssetManager assets, DisplayMetrics metrics, Configuration config) {
+    private ApkResources(AssetManager assets, DisplayMetrics metrics, Configuration config, String apkPath, Resources resources) {
         super(assets, metrics, config);
+        this.apkPath = apkPath;
+        this.hostResources = resources;
     }
 
+    public Resources getHostResources() {
+        return hostResources;
+    }
+
+    public String getApkPath() {
+        return apkPath;
+    }
 }

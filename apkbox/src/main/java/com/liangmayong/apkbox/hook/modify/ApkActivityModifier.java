@@ -3,17 +3,23 @@ package com.liangmayong.apkbox.hook.modify;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Application;
+import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.view.ContextThemeWrapper;
+import android.view.LayoutInflater;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.liangmayong.apkbox.core.ApkLoaded;
+import com.liangmayong.apkbox.core.resources.ApkLayoutInflater;
 import com.liangmayong.apkbox.reflect.ApkReflect;
 import com.liangmayong.apkbox.utils.ApkLogger;
 
@@ -111,8 +117,35 @@ public class ApkActivityModifier {
     }
 
     private static void applyTheme(Activity target, ActivityInfo activityInfo) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ECLAIR) {
+            try {
+                Class<?> clazz = Class.forName("com.android.internal.R.styleable");
+                TypedArray typedArray = target.obtainStyledAttributes((int[]) ApkReflect.getField(clazz, null, "Window"));
+                if (typedArray != null) {
+                    boolean showWallpaper = typedArray.getBoolean((Integer) ApkReflect.getField(clazz, null, "Window_windowShowWallpaper"),
+                            false);
+                    if (showWallpaper) {
+                        target.getWindow().setBackgroundDrawable(WallpaperManager.getInstance(target).getDrawable());
+                    }
+                    typedArray.recycle();
+                }
+            } catch (Throwable e) {
+            }
+        }
+        Window window = target.getWindow();
+        LayoutInflater originInflater = target.getLayoutInflater();
+        if (!(originInflater instanceof ApkLayoutInflater)) {
+            try {
+                ApkReflect.setField(window.getClass(), window, "mLayoutInflater",
+                        new ApkLayoutInflater(originInflater));
+            } catch (Exception e) {
+            }
+        }
+
         try {
-            ContextThemeWrapper contextThemeWrapper = new ContextThemeWrapper(target, activityInfo.getThemeResource());
+            int mThemeResource = activityInfo.getThemeResource();
+            ApkReflect.setField(ContextThemeWrapper.class, target, "mThemeResource", mThemeResource);
+            ContextThemeWrapper contextThemeWrapper = new ContextThemeWrapper(target, mThemeResource);
             ApkReflect.setField(target.getClass(), target, "mTheme", contextThemeWrapper.getTheme());
         } catch (Exception e) {
             ApkLogger.get().debug("applyTheme fail", e);

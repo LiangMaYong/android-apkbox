@@ -49,6 +49,9 @@ public class ApkLoaded {
         if (APKLOADEDS.containsKey(key)) {
             return APKLOADEDS.get(key);
         }
+        if (context == null) {
+            return null;
+        }
         ApkLoaded loaded = ApkLoader.loadApk(context, apkPath);
         if (loaded != null) {
             APKLOADEDS.put(key, loaded);

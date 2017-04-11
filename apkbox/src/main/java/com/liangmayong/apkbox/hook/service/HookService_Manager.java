@@ -12,6 +12,7 @@ import android.os.IBinder;
 import com.liangmayong.apkbox.core.ApkLoaded;
 import com.liangmayong.apkbox.core.constant.ApkConstant;
 import com.liangmayong.apkbox.hook.HookCurrentActivityThread;
+import com.liangmayong.apkbox.hook.modify.ApkComponentModifier;
 import com.liangmayong.apkbox.reflect.ApkMethod;
 import com.liangmayong.apkbox.reflect.ApkReflect;
 
@@ -32,7 +33,7 @@ public class HookService_Manager {
     public static boolean onUnbindService(Service service, Intent intent) {
         if (mRealServices.containsKey(service)) {
             Map<String, Service> serviceMap = mRealServices.get(service);
-            String key = HookService_Component.getKey(intent);
+            String key = ApkComponentModifier.getKey(intent);
             if (serviceMap.containsKey(key)) {
                 return serviceMap.get(key).onUnbind(intent);
             }
@@ -43,7 +44,7 @@ public class HookService_Manager {
     public static IBinder onBindService(Service service, Intent intent) {
         if (mRealServices.containsKey(service)) {
             Map<String, Service> serviceMap = mRealServices.get(service);
-            String key = HookService_Component.getKey(intent);
+            String key = ApkComponentModifier.getKey(intent);
             if (serviceMap.containsKey(key)) {
                 return serviceMap.get(key).onBind(intent);
             }
@@ -55,7 +56,7 @@ public class HookService_Manager {
         realCreateService(service, intent);
         if (mRealServices.containsKey(service)) {
             Map<String, Service> serviceMap = mRealServices.get(service);
-            String key = HookService_Component.getKey(intent);
+            String key = ApkComponentModifier.getKey(intent);
             if (serviceMap.containsKey(key)) {
                 serviceMap.get(key).onStart(intent, startId);
             }
@@ -66,7 +67,7 @@ public class HookService_Manager {
         realCreateService(service, intent);
         if (mRealServices.containsKey(service)) {
             Map<String, Service> serviceMap = mRealServices.get(service);
-            String key = HookService_Component.getKey(intent);
+            String key = ApkComponentModifier.getKey(intent);
             if (serviceMap.containsKey(key)) {
                 return serviceMap.get(key).onStartCommand(intent, flags, startId);
             }
@@ -77,7 +78,7 @@ public class HookService_Manager {
     public static void onRebindService(Service service, Intent intent) {
         if (mRealServices.containsKey(service)) {
             Map<String, Service> serviceMap = mRealServices.get(service);
-            String key = HookService_Component.getKey(intent);
+            String key = ApkComponentModifier.getKey(intent);
             if (serviceMap.containsKey(key)) {
                 serviceMap.get(key).onRebind(intent);
             }
@@ -142,9 +143,9 @@ public class HookService_Manager {
 
     private static void realCreateService(Service service, Intent intent) {
         if (intent.hasExtra(ApkConstant.EXTRA_APK_PATH)) {
-            String apkPath = HookService_Component.getPath(intent);
-            String className = HookService_Component.getClassName(intent);
-            String key = HookService_Component.getKey(intent);
+            String apkPath = ApkComponentModifier.getPath(intent);
+            String className = ApkComponentModifier.getClassName(intent);
+            String key = ApkComponentModifier.getKey(intent);
             if (!mRealServices.containsKey(service) || !mRealServices.get(service).containsKey(key)) {
                 try {
                     Object realToken = new Binder();

@@ -7,6 +7,6 @@ import android.widget.Toast;
 /**
  * Created by LiangMaYong on 2017/3/29.
  */
-public class Proxy0Activity extends Proxy404Activity {
+public class Proxy00Activity extends Proxy404Activity {
 
 }

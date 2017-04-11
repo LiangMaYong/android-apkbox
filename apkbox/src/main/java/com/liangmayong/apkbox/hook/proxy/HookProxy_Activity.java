@@ -3,7 +3,7 @@ package com.liangmayong.apkbox.hook.proxy;
 import android.content.Intent;
 import android.util.Pair;
 
-import com.liangmayong.apkbox.hook.component.HookComponent_Activity;
+import com.liangmayong.apkbox.hook.activity.HookActivity_Component;
 import com.liangmayong.apkbox.utils.ApkLogger;
 
 import java.lang.reflect.Method;
@@ -21,7 +21,7 @@ public class HookProxy_Activity {
         Pair<Integer, Intent> pairPairPair = getArgsPair(args);
         if (pairPairPair.first != -1) {
             int intentIndex = pairPairPair.first;
-            Intent newIntent = HookComponent_Activity.modify(pairPairPair.second);
+            Intent newIntent = HookActivity_Component.modify(pairPairPair.second);
             args[intentIndex] = newIntent;
         }
         return method.invoke(proxy, args);

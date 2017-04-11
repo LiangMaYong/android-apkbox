@@ -1,21 +1,22 @@
-package com.liangmayong.apkbox.hook.component;
+package com.liangmayong.apkbox.hook.activity;
 
 import android.content.ComponentName;
 import android.content.Intent;
 
 import com.liangmayong.apkbox.core.constant.ApkConstant;
-import com.liangmayong.apkbox.proxy.activity.Proxy0Activity;
+import com.liangmayong.apkbox.hook.modify.ApkComponentModifier;
+import com.liangmayong.apkbox.proxy.activity.Proxy00Activity;
+import com.liangmayong.apkbox.proxy.activity.Proxy01Activity;
+import com.liangmayong.apkbox.proxy.activity.Proxy02Activity;
+import com.liangmayong.apkbox.proxy.activity.Proxy03Activity;
+import com.liangmayong.apkbox.proxy.activity.Proxy04Activity;
+import com.liangmayong.apkbox.proxy.activity.Proxy05Activity;
+import com.liangmayong.apkbox.proxy.activity.Proxy06Activity;
+import com.liangmayong.apkbox.proxy.activity.Proxy07Activity;
+import com.liangmayong.apkbox.proxy.activity.Proxy08Activity;
+import com.liangmayong.apkbox.proxy.activity.Proxy09Activity;
 import com.liangmayong.apkbox.proxy.activity.Proxy10Activity;
-import com.liangmayong.apkbox.proxy.activity.Proxy1Activity;
-import com.liangmayong.apkbox.proxy.activity.Proxy2Activity;
-import com.liangmayong.apkbox.proxy.activity.Proxy3Activity;
 import com.liangmayong.apkbox.proxy.activity.Proxy404Activity;
-import com.liangmayong.apkbox.proxy.activity.Proxy4Activity;
-import com.liangmayong.apkbox.proxy.activity.Proxy5Activity;
-import com.liangmayong.apkbox.proxy.activity.Proxy6Activity;
-import com.liangmayong.apkbox.proxy.activity.Proxy7Activity;
-import com.liangmayong.apkbox.proxy.activity.Proxy8Activity;
-import com.liangmayong.apkbox.proxy.activity.Proxy9Activity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,25 +24,25 @@ import java.util.Map;
 /**
  * Created by LiangMaYong on 2017/4/5.
  */
-public class HookComponent_Activity {
+public class HookActivity_Component {
 
-    private HookComponent_Activity() {
+    private HookActivity_Component() {
     }
 
     // COMPONENTMAP
-    private static Map<String, Class> COMPONENTMAP = new HashMap<>();
+    private static final Map<String, Class> COMPONENTMAP = new HashMap<>();
     // CLASSES
-    public static Class<?>[] CLASSES = new Class[]{
-            Proxy0Activity.class,
-            Proxy1Activity.class,
-            Proxy2Activity.class,
-            Proxy3Activity.class,
-            Proxy4Activity.class,
-            Proxy5Activity.class,
-            Proxy6Activity.class,
-            Proxy7Activity.class,
-            Proxy8Activity.class,
-            Proxy9Activity.class,
+    private static final Class<?>[] CLASSES = new Class[]{
+            Proxy00Activity.class,
+            Proxy01Activity.class,
+            Proxy02Activity.class,
+            Proxy03Activity.class,
+            Proxy04Activity.class,
+            Proxy05Activity.class,
+            Proxy06Activity.class,
+            Proxy07Activity.class,
+            Proxy08Activity.class,
+            Proxy09Activity.class,
             Proxy10Activity.class,
     };
     // index
@@ -52,12 +53,12 @@ public class HookComponent_Activity {
                 && raw != null
                 && raw.getComponent() != null
                 && raw.hasExtra(ApkConstant.EXTRA_APK_PATH)) {
-            String key = getPath(raw) + "@" + getClassName(raw);
+            String key = ApkComponentModifier.getKey(raw);
             Class<?> clazz = null;
             if (raw.hasExtra(ApkConstant.EXTRA_APK_PROXY)) {
                 String proxyClass = raw.getStringExtra(ApkConstant.EXTRA_APK_PROXY);
                 try {
-                    clazz = HookComponent_Activity.class.getClassLoader().loadClass(proxyClass);
+                    clazz = HookActivity_Component.class.getClassLoader().loadClass(proxyClass);
                 } catch (ClassNotFoundException e) {
                 }
             }
@@ -84,17 +85,4 @@ public class HookComponent_Activity {
         return raw;
     }
 
-    public static String getPath(Intent intent) {
-        if (intent != null && intent.hasExtra(ApkConstant.EXTRA_APK_PATH)) {
-            return intent.getStringExtra(ApkConstant.EXTRA_APK_PATH);
-        }
-        return null;
-    }
-
-    public static String getClassName(Intent intent) {
-        if (intent != null && intent.getComponent() != null) {
-            return intent.getComponent().getClassName();
-        }
-        return null;
-    }
 }
