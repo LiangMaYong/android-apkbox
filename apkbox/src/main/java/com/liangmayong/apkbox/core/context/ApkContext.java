@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import com.liangmayong.apkbox.core.ApkLoaded;
 import com.liangmayong.apkbox.core.constant.ApkConstant;
 import com.liangmayong.apkbox.core.resources.ApkLayoutInflater;
+import com.liangmayong.apkbox.hook.activity.HookActivity_Component;
 import com.liangmayong.apkbox.hook.service.HookService_Component;
 import com.liangmayong.apkbox.reflect.ApkMethod;
 
@@ -119,20 +120,12 @@ public final class ApkContext extends Application {
         return false;
     }
 
-    @Override
-    public ComponentName startService(Intent service) {
-        if (isApkLoaded()) {
-            service.putExtra(ApkConstant.EXTRA_APK_PATH, loaded.getApkPath());
-        }
-        service = HookService_Component.modify(service);
-        return super.startService(service);
-    }
-
 
     @Override
     public void startActivity(Intent intent) {
         if (isApkLoaded()) {
             intent.putExtra(ApkConstant.EXTRA_APK_PATH, loaded.getApkPath());
+            intent = HookActivity_Component.modify(intent);
         }
         super.startActivity(intent);
     }
@@ -141,16 +134,26 @@ public final class ApkContext extends Application {
     public void startActivity(Intent intent, Bundle options) {
         if (isApkLoaded()) {
             intent.putExtra(ApkConstant.EXTRA_APK_PATH, loaded.getApkPath());
+            intent = HookActivity_Component.modify(intent);
         }
         super.startActivity(intent, options);
+    }
+
+    @Override
+    public ComponentName startService(Intent service) {
+        if (isApkLoaded()) {
+            service.putExtra(ApkConstant.EXTRA_APK_PATH, loaded.getApkPath());
+            service = HookService_Component.modify(service);
+        }
+        return super.startService(service);
     }
 
     @Override
     public boolean stopService(Intent name) {
         if (isApkLoaded()) {
             name.putExtra(ApkConstant.EXTRA_APK_PATH, loaded.getApkPath());
+            name = HookService_Component.modify(name);
         }
-        name = HookService_Component.modify(name);
         return super.stopService(name);
     }
 
@@ -158,28 +161,36 @@ public final class ApkContext extends Application {
     public boolean bindService(Intent service, ServiceConnection conn, int flags) {
         if (isApkLoaded()) {
             service.putExtra(ApkConstant.EXTRA_APK_PATH, loaded.getApkPath());
+            service = HookService_Component.modify(service);
         }
-        service = HookService_Component.modify(service);
         return super.bindService(service, conn, flags);
     }
 
     @Override
     public void sendBroadcast(Intent intent, String receiverPermission) {
-        receiverPermission = getPackageName() + ".permission.APK_RECEIVE";
+        if (isApkLoaded()) {
+            receiverPermission = getPackageName() + ".permission.APK_RECEIVE";
+        }
         super.sendBroadcast(intent, receiverPermission);
     }
 
     @Override
     public void sendBroadcast(Intent intent) {
-        sendBroadcast(intent, "");
+        if (isApkLoaded()) {
+            sendBroadcast(intent, "");
+        }else{
+            super.sendBroadcast(intent);
+        }
     }
 
     @Override
     public Object getSystemService(String name) {
-        if (Context.LAYOUT_INFLATER_SERVICE.equals(name)) {
-            return new ApkLayoutInflater((LayoutInflater) super.getSystemService(name));
-        } else if (ApkConstant.SERVICE_APK_BANDLE.equals(name)) {
-            return null;
+        if (isApkLoaded()) {
+            if (Context.LAYOUT_INFLATER_SERVICE.equals(name)) {
+                return new ApkLayoutInflater((LayoutInflater) super.getSystemService(name));
+            } else if (ApkConstant.SERVICE_APK_BOX_MANAGER.equals(name)) {
+                return null;
+            }
         }
         return super.getSystemService(name);
     }

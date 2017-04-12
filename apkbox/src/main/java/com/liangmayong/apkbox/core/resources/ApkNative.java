@@ -1,6 +1,8 @@
 package com.liangmayong.apkbox.core.resources;
 
+import com.liangmayong.apkbox.utils.ApkFile;
 import com.liangmayong.apkbox.utils.ApkLogger;
+import com.liangmayong.apkbox.utils.ApkMd5;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -33,7 +35,7 @@ public final class ApkNative {
             return "";
         }
         try {
-            String libraryDir = apkFile.getParent() + "/libs/";
+            String libraryDir = apkFile.getParent() + "/" + ApkMd5.md5(apkPath) + "/libs/";
             File file = new File(libraryDir);
             if (!file.exists()) {
                 file.mkdirs();
@@ -55,6 +57,17 @@ public final class ApkNative {
     }
 
     /**
+     * clearNativeLibrary
+     *
+     * @param apkPath apkPath
+     */
+    public static void clearNativeLibrary(String apkPath) {
+        String targetDir = getNativePath(apkPath);
+        File file = new File(targetDir, "");
+        ApkFile.deleteFile(file);
+    }
+
+    /**
      * copyNativeLibrary
      *
      * @param apkPath apkPath
@@ -68,7 +81,7 @@ public final class ApkNative {
             String targetDir = getNativePath(apkPath);
             File file = new File(targetDir, "");
             if (force) {
-                deleteFile(file);
+                ApkFile.deleteFile(file);
             }
             if (!file.exists()) {
                 file.mkdirs();
@@ -78,28 +91,6 @@ public final class ApkNative {
         long endTime = System.currentTimeMillis();
         ApkLogger.get().debug("Copyed native *.so library " + apkPath + " libs(" + (endTime - startTime) + "ms)", null);
         return getNativePath(apkPath);
-    }
-
-    private static void deleteFile(File file) {
-        if (file.exists() == false) {
-            return;
-        } else {
-            if (file.isFile()) {
-                file.delete();
-                return;
-            }
-            if (file.isDirectory()) {
-                File[] childFile = file.listFiles();
-                if (childFile == null || childFile.length == 0) {
-                    file.delete();
-                    return;
-                }
-                for (File f : childFile) {
-                    deleteFile(f);
-                }
-                file.delete();
-            }
-        }
     }
 
     /**

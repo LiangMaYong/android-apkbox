@@ -11,6 +11,6 @@ public interface ApkConstant {
     String EXTRA_APK_MODIFIED = "apkbox_extra_modified";
     String EXTRA_APK_TARGET_INTENT = "apkbox_extra_target_intent";
 
-    String SERVICE_APK_BANDLE = "apkbox_service_bandle";
+    String SERVICE_APK_BOX_MANAGER = "apkbox_manager_service";
 
 }

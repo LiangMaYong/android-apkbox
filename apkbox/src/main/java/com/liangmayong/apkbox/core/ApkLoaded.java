@@ -74,6 +74,7 @@ public class ApkLoaded {
     private Drawable apkIcon = null;
     private PackageInfo apkInfo = null;
     private String apkSignture = "";
+    private String apkSha1 = "";
     private int apkVersionCode = 1;
     private String apkVersionName = "";
     private PackageManager apkPackageManager = null;
@@ -144,6 +145,14 @@ public class ApkLoaded {
 
     public void setApkSignture(String apkSignture) {
         this.apkSignture = apkSignture;
+    }
+
+    public String getApkSha1() {
+        return apkSha1;
+    }
+
+    public void setApkSha1(String apkSha1) {
+        this.apkSha1 = apkSha1;
     }
 
     public int getApkVersionCode() {
@@ -337,6 +346,7 @@ public class ApkLoaded {
                 ", apkIcon=" + apkIcon +
                 ", apkInfo=" + apkInfo +
                 ", apkSignture='" + apkSignture + '\'' +
+                ", apkSha1='" + apkSha1 + '\'' +
                 ", apkVersionCode=" + apkVersionCode +
                 ", apkVersionName='" + apkVersionName + '\'' +
                 ", apkPackageManager=" + apkPackageManager +

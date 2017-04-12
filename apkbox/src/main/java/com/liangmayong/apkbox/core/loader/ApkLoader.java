@@ -12,12 +12,14 @@ import android.os.Build;
 import com.liangmayong.apkbox.core.ApkLoaded;
 import com.liangmayong.apkbox.core.context.ApkContext;
 import com.liangmayong.apkbox.core.context.ApkContextModifier;
+import com.liangmayong.apkbox.core.manager.orm.ApkOrmModel;
 import com.liangmayong.apkbox.core.resources.ApkNative;
 import com.liangmayong.apkbox.core.resources.ApkResources;
 import com.liangmayong.apkbox.core.resources.ApkSignture;
 import com.liangmayong.apkbox.reflect.ApkMethod;
 import com.liangmayong.apkbox.reflect.ApkReflect;
 import com.liangmayong.apkbox.utils.ApkLogger;
+import com.liangmayong.apkbox.utils.ApkMd5;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
@@ -71,6 +73,7 @@ public class ApkLoader {
                     loaded.setApkName(pm.getApplicationLabel(info).toString());
                     loaded.setApkIcon(info.loadIcon(pm));
                     loaded.setApkSignture(ApkSignture.getSignture(context, apkPath));
+                    loaded.setApkSha1(ApkMd5.sha1(file));
                     loaded.setApkInfo(pkg);
                     loaded.setApkVersionCode(pkg.versionCode);
                     loaded.setApkVersionName(pkg.versionName);
@@ -93,6 +96,37 @@ public class ApkLoader {
             }
         } else {
             ApkLogger.get().debug("Invalid apk file : " + apkPath, null);
+        }
+        return null;
+    }
+
+
+    /**
+     * parserApkOrmModel
+     *
+     * @param context context
+     * @param apkPath apkPath
+     * @return model
+     */
+    public static ApkOrmModel parserApkOrmModel(Context context, String apkPath) {
+        File file = new File(apkPath);
+        if (file.exists() && apkPath.endsWith(".apk")) {
+            try {
+                PackageManager pm = context.getPackageManager();
+                PackageInfo pkg = pm.getPackageArchiveInfo(apkPath, PackageManager.GET_ACTIVITIES);
+                if (pkg != null) {
+                    ApkOrmModel model = new ApkOrmModel();
+                    model.setApkPath(apkPath);
+                    model.setApkPackageName(pkg.packageName);
+                    model.setApkVersionCode(pkg.versionCode);
+                    model.setApkVersionName(pkg.versionName);
+                    model.setApkSignture(ApkSignture.getSignture(context, apkPath));
+                    model.setApkSha1(ApkMd5.sha1(file));
+                    return model;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return null;
     }
