@@ -5,7 +5,7 @@ android apk plugin frameword
 ## LICENSE
 Copyright © LiangMaYong
 
-Distributed under [MIT](https://github.com/LiangMaYong/android-base/blob/master/LICENSE) license.
+Distributed under [MIT](https://github.com/LiangMaYong/android-apkbox/blob/master/LICENSE.txt) license.
 
 ## Author
 LiangMaYong
