@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.util.Pair;
 
 import com.liangmayong.apkbox.hook.activity.HookActivity_Component;
+import com.liangmayong.apkbox.utils.ApkBuild;
 import com.liangmayong.apkbox.utils.ApkLogger;
 
 import java.lang.reflect.Method;
@@ -13,11 +14,14 @@ import java.lang.reflect.Method;
  */
 public class HookProxy_Activity {
 
+    private static final boolean DEBUG_HOOK_PROXY = ApkBuild.DEBUG_HOOK_PROXY;
+
     private HookProxy_Activity() {
     }
 
     public static Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        ApkLogger.get().debug("hook proxy " + method.getName(), null);
+        if (DEBUG_HOOK_PROXY)
+            ApkLogger.get().debug("hook proxy " + method.getName(), null);
         Pair<Integer, Intent> pairPairPair = getArgsPair(args);
         if (pairPairPair.first != -1) {
             int intentIndex = pairPairPair.first;

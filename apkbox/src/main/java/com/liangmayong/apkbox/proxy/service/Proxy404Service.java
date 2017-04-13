@@ -8,6 +8,7 @@ import android.os.IBinder;
 
 import com.liangmayong.apkbox.core.constant.ApkConstant;
 import com.liangmayong.apkbox.hook.service.HookService_Manager;
+import com.liangmayong.apkbox.utils.ApkBuild;
 import com.liangmayong.apkbox.utils.ApkLogger;
 
 /**
@@ -15,11 +16,13 @@ import com.liangmayong.apkbox.utils.ApkLogger;
  */
 public class Proxy404Service extends Service {
 
+    private static final boolean DEBUG_LIFECYCLE = ApkBuild.DEBUG_LIFECYCLE;
     private String TAG = getClass().getSimpleName();
 
     @Override
     public IBinder onBind(Intent intent) {
-        ApkLogger.get().debug(TAG + " - onBind", null);
+        if (DEBUG_LIFECYCLE)
+            ApkLogger.get().debug(TAG + " - onBind", null);
         if (intent != null && intent.hasExtra(ApkConstant.EXTRA_APK_TARGET_INTENT)) {
             Intent target = intent.getParcelableExtra(ApkConstant.EXTRA_APK_TARGET_INTENT);
             return HookService_Manager.onBindService(this, target);
@@ -29,13 +32,15 @@ public class Proxy404Service extends Service {
 
     @Override
     public void onCreate() {
-        ApkLogger.get().debug(TAG + " - onCreate", null);
+        if (DEBUG_LIFECYCLE)
+            ApkLogger.get().debug(TAG + " - onCreate", null);
         super.onCreate();
     }
 
     @Override
     public void onStart(Intent intent, int startId) {
-        ApkLogger.get().debug(TAG + " - onStart", null);
+        if (DEBUG_LIFECYCLE)
+            ApkLogger.get().debug(TAG + " - onStart", null);
         super.onStart(intent, startId);
         if (intent != null && intent.hasExtra(ApkConstant.EXTRA_APK_TARGET_INTENT)) {
             Intent target = intent.getParcelableExtra(ApkConstant.EXTRA_APK_TARGET_INTENT);
@@ -45,7 +50,8 @@ public class Proxy404Service extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        ApkLogger.get().debug(TAG + " - onStartCommandService", null);
+        if (DEBUG_LIFECYCLE)
+            ApkLogger.get().debug(TAG + " - onStartCommandService", null);
         if (intent != null && intent.hasExtra(ApkConstant.EXTRA_APK_TARGET_INTENT)) {
             Intent target = intent.getParcelableExtra(ApkConstant.EXTRA_APK_TARGET_INTENT);
             return HookService_Manager.onStartCommandService(this, target, flags, startId);
@@ -56,7 +62,8 @@ public class Proxy404Service extends Service {
 
     @Override
     public void onRebind(Intent intent) {
-        ApkLogger.get().debug(TAG + " - onRebind", null);
+        if (DEBUG_LIFECYCLE)
+            ApkLogger.get().debug(TAG + " - onRebind", null);
         if (intent != null && intent.hasExtra(ApkConstant.EXTRA_APK_TARGET_INTENT)) {
             Intent target = intent.getParcelableExtra(ApkConstant.EXTRA_APK_TARGET_INTENT);
             HookService_Manager.onRebindService(this, target);
@@ -66,7 +73,8 @@ public class Proxy404Service extends Service {
 
     @Override
     public boolean onUnbind(Intent intent) {
-        ApkLogger.get().debug(TAG + " - onUnbind", null);
+        if (DEBUG_LIFECYCLE)
+            ApkLogger.get().debug(TAG + " - onUnbind", null);
         if (intent != null && intent.hasExtra(ApkConstant.EXTRA_APK_TARGET_INTENT)) {
             Intent target = intent.getParcelableExtra(ApkConstant.EXTRA_APK_TARGET_INTENT);
             return HookService_Manager.onUnbindService(this, target);
@@ -76,35 +84,40 @@ public class Proxy404Service extends Service {
 
     @Override
     public void onDestroy() {
-        ApkLogger.get().debug(TAG + " - onDestroy", null);
+        if (DEBUG_LIFECYCLE)
+            ApkLogger.get().debug(TAG + " - onDestroy", null);
         super.onDestroy();
         HookService_Manager.onDestroyService(this);
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
-        ApkLogger.get().debug(TAG + " - onConfigurationChanged", null);
+        if (DEBUG_LIFECYCLE)
+            ApkLogger.get().debug(TAG + " - onConfigurationChanged", null);
         super.onConfigurationChanged(newConfig);
         HookService_Manager.onConfigurationChangedService(this, newConfig);
     }
 
     @Override
     public void onLowMemory() {
-        ApkLogger.get().debug(TAG + " - onLowMemory", null);
+        if (DEBUG_LIFECYCLE)
+            ApkLogger.get().debug(TAG + " - onLowMemory", null);
         super.onLowMemory();
         HookService_Manager.onLowMemoryService(this);
     }
 
     @Override
     public void onTrimMemory(int level) {
-        ApkLogger.get().debug(TAG + " - onTrimMemory", null);
+        if (DEBUG_LIFECYCLE)
+            ApkLogger.get().debug(TAG + " - onTrimMemory", null);
         super.onTrimMemory(level);
         HookService_Manager.onTrimMemoryService(this, level);
     }
 
     @Override
     public void onTaskRemoved(Intent rootIntent) {
-        ApkLogger.get().debug(TAG + " - onTaskRemoved", null);
+        if (DEBUG_LIFECYCLE)
+            ApkLogger.get().debug(TAG + " - onTaskRemoved", null);
         super.onTaskRemoved(rootIntent);
         HookService_Manager.onTaskRemovedService(this, rootIntent);
     }

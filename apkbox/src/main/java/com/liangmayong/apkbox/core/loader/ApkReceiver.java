@@ -9,7 +9,6 @@ import com.liangmayong.apkbox.reflect.ApkReflect;
 
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -77,7 +76,7 @@ public final class ApkReceiver {
                                 intentFilter.addAction(action);
                             }
                             BroadcastReceiver broadcastReceiver = (BroadcastReceiver) clazz.newInstance();
-                            context.registerReceiver(broadcastReceiver, intentFilter);
+                            context.getApplicationContext().registerReceiver(broadcastReceiver, intentFilter);
                             receivers.add(broadcastReceiver);
                         } catch (Exception e) {
                         }

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Message;
 
 import com.liangmayong.apkbox.core.constant.ApkConstant;
+import com.liangmayong.apkbox.utils.ApkBuild;
 import com.liangmayong.apkbox.utils.ApkLogger;
 
 import java.lang.reflect.Field;
@@ -13,11 +14,14 @@ import java.lang.reflect.Field;
  */
 public class HookActivity_LaunchActivity {
 
+    private static final boolean DEBUG_HOOK_PROXY = ApkBuild.DEBUG_HOOK_PROXY;
+
     private HookActivity_LaunchActivity() {
     }
 
     public static void handleLaunchActivity(Message msg) {
-        ApkLogger.get().debug("hook handleLaunchActivity", null);
+        if (DEBUG_HOOK_PROXY)
+            ApkLogger.get().debug("hook handleLaunchActivity", null);
         Object obj = msg.obj;
         try {
             Field intent = obj.getClass().getDeclaredField("intent");

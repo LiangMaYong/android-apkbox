@@ -8,20 +8,20 @@ import android.os.Bundle;
  */
 public interface OnActivityListener {
 
-    void onPostCreate(Activity target, Bundle savedInstanceState);
+    void onPostCreate(Activity target, Bundle savedInstanceState, boolean after);
 
-    void onCreate(Activity target, Bundle savedInstanceState);
+    void onCreate(Activity target, Bundle savedInstanceState, boolean after);
 
-    void onStart(Activity target);
+    void onStart(Activity target, boolean after);
 
-    void onRestart(Activity target);
+    void onRestart(Activity target, boolean after);
 
-    void onDestroy(Activity target);
+    void onDestroy(Activity target, boolean after);
 
-    void onPause(Activity target);
+    void onPause(Activity target, boolean after);
 
-    void onStop(Activity target);
+    void onStop(Activity target, boolean after);
 
-    void onResume(Activity target);
+    void onResume(Activity target, boolean after);
 
 }
