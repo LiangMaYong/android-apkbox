@@ -68,7 +68,7 @@ public final class ApkClassLoader {
         try {
             ClassLoader dexClassLoader = new DexClassLoader(apkPath, new File(apkPath).getParent(),
                     ApkNative.getNativePath(apkPath), ClassLoader.getSystemClassLoader());
-            return dexClassLoader;
+            return new ApkDexClassLoader(dexClassLoader);
         } catch (Exception e) {
             return null;
         }
