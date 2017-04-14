@@ -19,37 +19,20 @@
             android:name="com.liangmayong.apkbox.proxy.activity.Proxy404Activity"
             android:process="@string/apkbox_process"/>
         <activity
-            android:name="com.liangmayong.apkbox.proxy.activity.Proxy00Activity"
+            android:name="com.liangmayong.apkbox.proxy.activity.ProxyTaskActivity"
+            android:launchMode="singleTask"
             android:process="@string/apkbox_process"/>
         <activity
-            android:name="com.liangmayong.apkbox.proxy.activity.Proxy01Activity"
+            android:name="com.liangmayong.apkbox.proxy.activity.ProxyInstanceActivity"
+            android:launchMode="singleInstance"
             android:process="@string/apkbox_process"/>
         <activity
-            android:name="com.liangmayong.apkbox.proxy.activity.Proxy02Activity"
+            android:name="com.liangmayong.apkbox.proxy.activity.ProxyTopActivity"
+            android:launchMode="singleTop"
             android:process="@string/apkbox_process"/>
         <activity
-            android:name="com.liangmayong.apkbox.proxy.activity.Proxy03Activity"
-            android:process="@string/apkbox_process"/>
-        <activity
-            android:name="com.liangmayong.apkbox.proxy.activity.Proxy04Activity"
-            android:process="@string/apkbox_process"/>
-        <activity
-            android:name="com.liangmayong.apkbox.proxy.activity.Proxy05Activity"
-            android:process="@string/apkbox_process"/>
-        <activity
-            android:name="com.liangmayong.apkbox.proxy.activity.Proxy06Activity"
-            android:process="@string/apkbox_process"/>
-        <activity
-            android:name="com.liangmayong.apkbox.proxy.activity.Proxy07Activity"
-            android:process="@string/apkbox_process"/>
-        <activity
-            android:name="com.liangmayong.apkbox.proxy.activity.Proxy08Activity"
-            android:process="@string/apkbox_process"/>
-        <activity
-            android:name="com.liangmayong.apkbox.proxy.activity.Proxy09Activity"
-            android:process="@string/apkbox_process"/>
-        <activity
-            android:name="com.liangmayong.apkbox.proxy.activity.Proxy10Activity"
+            android:name="com.liangmayong.apkbox.proxy.activity.ProxyStandardActivity"
+            android:launchMode="standard"
             android:process="@string/apkbox_process"/>
 
         <!-- ProxyService -->

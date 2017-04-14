@@ -5,17 +5,10 @@ import android.content.Intent;
 
 import com.liangmayong.apkbox.core.constant.ApkConstant;
 import com.liangmayong.apkbox.hook.modify.ApkComponentModifier;
-import com.liangmayong.apkbox.proxy.activity.Proxy00Activity;
-import com.liangmayong.apkbox.proxy.activity.Proxy01Activity;
-import com.liangmayong.apkbox.proxy.activity.Proxy02Activity;
-import com.liangmayong.apkbox.proxy.activity.Proxy03Activity;
-import com.liangmayong.apkbox.proxy.activity.Proxy04Activity;
-import com.liangmayong.apkbox.proxy.activity.Proxy05Activity;
-import com.liangmayong.apkbox.proxy.activity.Proxy06Activity;
-import com.liangmayong.apkbox.proxy.activity.Proxy07Activity;
-import com.liangmayong.apkbox.proxy.activity.Proxy08Activity;
-import com.liangmayong.apkbox.proxy.activity.Proxy09Activity;
-import com.liangmayong.apkbox.proxy.activity.Proxy10Activity;
+import com.liangmayong.apkbox.proxy.activity.ProxyInstanceActivity;
+import com.liangmayong.apkbox.proxy.activity.ProxyStandardActivity;
+import com.liangmayong.apkbox.proxy.activity.ProxyTaskActivity;
+import com.liangmayong.apkbox.proxy.activity.ProxyTopActivity;
 import com.liangmayong.apkbox.proxy.activity.Proxy404Activity;
 
 import java.util.HashMap;
@@ -26,24 +19,24 @@ import java.util.Map;
  */
 public class HookActivity_Component {
 
+
     private HookActivity_Component() {
     }
+
+    // launch mode
+    public static final String SINGLE_TASK = "SINGLE_TASK";
+    public static final String SINGLE_INSTANCE = "SINGLE_INSTANCE";
+    public static final String SINGLE_TOP = "SINGLE_TOP";
+    public static final String STANDARD = "STANDARD";
 
     // COMPONENTMAP
     private static final Map<String, Class> COMPONENTMAP = new HashMap<>();
     // CLASSES
     private static final Class<?>[] CLASSES = new Class[]{
-            Proxy00Activity.class,
-            Proxy01Activity.class,
-            Proxy02Activity.class,
-            Proxy03Activity.class,
-            Proxy04Activity.class,
-            Proxy05Activity.class,
-            Proxy06Activity.class,
-            Proxy07Activity.class,
-            Proxy08Activity.class,
-            Proxy09Activity.class,
-            Proxy10Activity.class,
+            ProxyTaskActivity.class,
+            ProxyInstanceActivity.class,
+            ProxyTopActivity.class,
+            ProxyStandardActivity.class,
     };
     // index
     private static int index = 0;
@@ -66,13 +59,25 @@ public class HookActivity_Component {
                 if (COMPONENTMAP.containsKey(key)) {
                     clazz = COMPONENTMAP.get(key);
                 } else {
+                    String launchMode = "";
+                    if (raw.hasExtra(ApkConstant.EXTRA_APK_LAUNCH_MODE)) {
+                        launchMode = raw.getStringExtra(ApkConstant.EXTRA_APK_LAUNCH_MODE);
+                    }
+                    if (launchMode.equals(SINGLE_TASK)) {
+                        index = 0;
+                    } else if (launchMode.equals(SINGLE_INSTANCE)) {
+                        index = 1;
+                    } else if (launchMode.equals(SINGLE_TOP)) {
+                        index = 2;
+                    } else if (launchMode.equals(STANDARD)) {
+                        index = 3;
+                    }
                     if (index >= CLASSES.length) {
                         clazz = Proxy404Activity.class;
                     } else {
                         clazz = CLASSES[index];
                         COMPONENTMAP.put(key, clazz);
                     }
-                    index++;
                 }
             }
             Intent newIntent = new Intent();

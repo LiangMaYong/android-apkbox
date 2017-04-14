@@ -15,6 +15,7 @@ import com.liangmayong.apkbox.hook.HookCurrentActivityThread;
 import com.liangmayong.apkbox.hook.modify.ApkComponentModifier;
 import com.liangmayong.apkbox.reflect.ApkMethod;
 import com.liangmayong.apkbox.reflect.ApkReflect;
+import com.liangmayong.apkbox.utils.ApkLogger;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -53,7 +54,7 @@ public class HookService_Manager {
     }
 
     public static void onStartService(Service service, Intent intent, int startId) {
-        realCreateService(service, intent);
+        createService(service, intent);
         if (mRealServices.containsKey(service)) {
             Map<String, Service> serviceMap = mRealServices.get(service);
             String key = ApkComponentModifier.getKey(intent);
@@ -64,7 +65,7 @@ public class HookService_Manager {
     }
 
     public static int onStartCommandService(Service service, Intent intent, int flags, int startId) {
-        realCreateService(service, intent);
+        createService(service, intent);
         if (mRealServices.containsKey(service)) {
             Map<String, Service> serviceMap = mRealServices.get(service);
             String key = ApkComponentModifier.getKey(intent);
@@ -141,7 +142,7 @@ public class HookService_Manager {
         }
     }
 
-    private static void realCreateService(Service service, Intent intent) {
+    private static void createService(Service service, Intent intent) {
         if (intent.hasExtra(ApkConstant.EXTRA_APK_PATH)) {
             String apkPath = ApkComponentModifier.getPath(intent);
             String className = ApkComponentModifier.getClassName(intent);
@@ -188,7 +189,7 @@ public class HookService_Manager {
             rawService.onCreate();
             return rawService;
         } catch (Exception e) {
-            e.printStackTrace();
+            ApkLogger.get().debug("handleCreateService error", e);
         }
         return proxyService;
     }
@@ -208,6 +209,7 @@ public class HookService_Manager {
             Object activityManager = getDefaultMethod.invoke(null);
             ApkReflect.setField(Service.class, service, "mActivityManager", activityManager);
         } catch (Exception e) {
+            ApkLogger.get().debug("modifyService error", e);
         }
     }
 }
