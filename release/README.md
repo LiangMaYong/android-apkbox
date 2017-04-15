@@ -1,8 +1,4 @@
-# android-apkbox
-
-![APKBOX](https://github.com/LiangMaYong/android-apkbox/blob/master/logo.png)
-
-## GRADLE
+# RELEASE
 ```gradle
 dependencies {
     compile 'com.liangmayong.android:apkbox:1.0.0'
