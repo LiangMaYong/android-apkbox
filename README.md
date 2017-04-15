@@ -2,8 +2,6 @@
 
 ![APKBOX](https://github.com/LiangMaYong/android-apkbox/blob/master/logo.png)
 
-android apk plugin frameword
-
 ## LICENSE
 Copyright © LiangMaYong
 
