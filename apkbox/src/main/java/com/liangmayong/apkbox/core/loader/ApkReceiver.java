@@ -25,6 +25,7 @@ package com.liangmayong.apkbox.core.loader;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
 
 import com.liangmayong.apkbox.core.ApkLoaded;
@@ -47,7 +48,7 @@ public final class ApkReceiver {
     /**
      * unregisterReceiver
      *
-     * @param loaded loaded
+     * @param loaded mLoaded
      */
     public static void unregisterReceiver(ApkLoaded loaded) {
         String key = loaded.getApkPath();
@@ -69,7 +70,7 @@ public final class ApkReceiver {
      * registerReceiver
      *
      * @param context context
-     * @param loaded  loaded
+     * @param loaded  mLoaded
      */
     public static void registerReceiver(Context context, ApkLoaded loaded) {
         if (!ApkProcess.validateApkProcessName(context)) {
@@ -96,12 +97,13 @@ public final class ApkReceiver {
                             for (int i = 0; i < count; i++) {
                                 String action = raw.getAction(i);
                                 if (action.contains(loaded.getApkInfo().packageName)) {
-                                    action = action.replaceAll(loaded.getApkInfo().packageName, context.getPackageName());
+                                    action = action.replaceAll(loaded.getApkInfo().packageName, ctx.getPackageName());
                                 }
                                 intentFilter.addAction(action);
                             }
                             BroadcastReceiver broadcastReceiver = (BroadcastReceiver) clazz.newInstance();
-                            ctx.registerReceiver(broadcastReceiver, intentFilter);
+                            ProxyReceiver proxyReceiver = new ProxyReceiver(loaded, broadcastReceiver);
+                            ctx.registerReceiver(proxyReceiver, intentFilter);
                             receivers.add(broadcastReceiver);
                         } catch (Exception e) {
                         }
@@ -110,6 +112,26 @@ public final class ApkReceiver {
                 }
             }
             BROADCAST_RECEIVER_MAP.put(key, receivers);
+        }
+    }
+
+
+    private static class ProxyReceiver extends BroadcastReceiver {
+
+        private BroadcastReceiver mBase = null;
+        private ApkLoaded mLoaded = null;
+
+        public ProxyReceiver(ApkLoaded loaded, BroadcastReceiver mBase) {
+            this.mBase = mBase;
+            this.mLoaded = loaded;
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (mLoaded != null) {
+                context = mLoaded.getContext(context);
+            }
+            mBase.onReceive(context, intent);
         }
     }
 }

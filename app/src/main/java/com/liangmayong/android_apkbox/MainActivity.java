@@ -1,6 +1,9 @@
 package com.liangmayong.android_apkbox;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -55,6 +58,12 @@ public class MainActivity extends Activity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public Intent registerReceiver(BroadcastReceiver receiver, IntentFilter filter) {
+        Log.e("TAG","registerReceiver");
+        return super.registerReceiver(receiver, filter);
     }
 
     public void findApk() {

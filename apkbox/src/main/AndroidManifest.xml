@@ -17,22 +17,27 @@
         <!-- ProxyActivity -->
         <activity
             android:name="com.liangmayong.apkbox.proxy.activity.Proxy404Activity"
-            android:process="@string/apkbox_process"/>
+            android:process="@string/apkbox_process"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
         <activity
             android:name="com.liangmayong.apkbox.proxy.activity.ProxyTaskActivity"
             android:launchMode="singleTask"
-            android:process="@string/apkbox_process"/>
+            android:process="@string/apkbox_process"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
         <activity
             android:name="com.liangmayong.apkbox.proxy.activity.ProxyInstanceActivity"
             android:launchMode="singleInstance"
-            android:process="@string/apkbox_process"/>
+            android:process="@string/apkbox_process"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
         <activity
             android:name="com.liangmayong.apkbox.proxy.activity.ProxyTopActivity"
             android:launchMode="singleTop"
-            android:process="@string/apkbox_process"/>
+            android:process="@string/apkbox_process"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
         <activity
             android:name="com.liangmayong.apkbox.proxy.activity.ProxyStandardActivity"
             android:launchMode="standard"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:process="@string/apkbox_process"/>
 
         <!-- ProxyService -->

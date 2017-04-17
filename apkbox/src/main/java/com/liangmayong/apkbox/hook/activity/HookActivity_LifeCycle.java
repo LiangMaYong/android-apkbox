@@ -114,6 +114,17 @@ public class HookActivity_LifeCycle {
         ApkBox.get().getActivityListener().onResume(target, after);
     }
 
+    public static void onNewIntent(Activity target,Intent intent, boolean after) {
+        if (DEBUG_LIFECYCLE)
+            ApkLogger.get().debug("LifeCycle_onNewIntent " + (after ? "after" : ""), null);
+    }
+
+
+    public static void OnUserLeaving(Activity target, boolean after) {
+        if (DEBUG_LIFECYCLE)
+            ApkLogger.get().debug("LifeCycle_OnUserLeaving " + (after ? "after" : ""), null);
+    }
+
     /////////////////////////////////////////////////////////////////////////////
     //////// Instance State
     /////////////////////////////////////////////////////////////////////////////
