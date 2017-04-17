@@ -18,8 +18,7 @@ import java.io.IOException;
 
 public class MainActivity extends Activity {
 
-    private String appName = "app.apk";
-    private String packageName = "com.liangmayong.imoa";
+    private String appName = "PLPlayer.apk";
     private ImageView imageView;
     private TextView textView;
 
@@ -58,36 +57,6 @@ public class MainActivity extends Activity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public Intent registerReceiver(BroadcastReceiver receiver, IntentFilter filter) {
-        Log.e("TAG","registerReceiver");
-        return super.registerReceiver(receiver, filter);
-    }
-
-    public void findApk() {
-        ApkBox.get().findApk(MainActivity.this, packageName, new ApkBox.Listener<ApkLoaded>() {
-            @Override
-            public void onSuccess(final ApkLoaded loaded) {
-                Log.e("TAG", loaded + "");
-                imageView.setImageDrawable(loaded.getApkIcon());
-                textView.setText(loaded.getApkName());
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if (loaded != null) {
-                            loaded.launch(MainActivity.this, null);
-                        }
-                    }
-                });
-            }
-
-            @Override
-            public void onFail(ApkException exception) {
-                exception.printStackTrace();
-            }
-        });
     }
 
     private void initView() {
