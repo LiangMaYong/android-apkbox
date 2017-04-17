@@ -31,6 +31,7 @@ public interface ApkConstant {
     String EXTRA_APK_PATH = "apkbox_extra_path";
     String EXTRA_APK_PROXY = "apkbox_extra_proxy";
     String EXTRA_APK_EXTRAS = "apkbox_extra_extras";
+    String EXTRA_APK_THEME = "apkbox_extra_theme";
     String EXTRA_APK_MODIFIED = "apkbox_extra_modified";
     String EXTRA_APK_LAUNCH_MODE = "apkbox_extra_launch_mode";
     String EXTRA_APK_TARGET_INTENT = "apkbox_extra_target_intent";
