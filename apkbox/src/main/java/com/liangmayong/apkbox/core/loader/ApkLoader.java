@@ -93,7 +93,6 @@ public class ApkLoader {
                     }
                     loaded.setApkPath(apkPath);
                     loaded.setApkName(pm.getApplicationLabel(info).toString());
-                    loaded.setApkName(pm.getApplicationLabel(info).toString());
                     loaded.setApkIcon(info.loadIcon(pm));
                     loaded.setApkSignture(ApkSignture.getSignture(context, apkPath));
                     loaded.setApkSha1(ApkMd5.sha1(file));
