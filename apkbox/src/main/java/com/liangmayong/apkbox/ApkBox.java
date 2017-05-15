@@ -241,7 +241,7 @@ public class ApkBox {
         return ApkOrmDao.get().findApk(context, pathOrPackageName);
     }
 
-    public List<ApkOrmModel> findApkModelList(final Context context, final String pathOrPackageName) {
+    public List<ApkOrmModel> findApkModelList(final Context context) {
         return ApkOrmDao.get().getApkList(context);
     }
 

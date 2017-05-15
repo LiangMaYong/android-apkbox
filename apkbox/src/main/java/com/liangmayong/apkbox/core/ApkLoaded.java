@@ -42,7 +42,7 @@ import com.liangmayong.apkbox.core.classloader.ApkClassLoader;
 import com.liangmayong.apkbox.core.constant.ApkConstant;
 import com.liangmayong.apkbox.core.context.ApkContext;
 import com.liangmayong.apkbox.core.loader.ApkLoader;
-import com.liangmayong.apkbox.core.resources.ApkModel;
+import com.liangmayong.apkbox.core.resources.ApkInterface;
 import com.liangmayong.apkbox.core.resources.ApkResources;
 
 import java.util.HashMap;
@@ -267,28 +267,45 @@ public class ApkLoaded {
         return intentFilter;
     }
 
-    public void setFilter(String key, IntentFilter intentFilter) {
-        if (filters != null) {
-            filters.put(key, intentFilter);
-        }
-    }
-
     /////////////////////////////////////////////////////////////////////
-    //////// Hook Class and Res and Model
+    //////// Hook Class and Res and Interface
     /////////////////////////////////////////////////////////////////////
 
+    /**
+     * getClassLoader
+     *
+     * @return classloader
+     */
     public ClassLoader getClassLoader() {
         return ApkClassLoader.getClassloader(getApkPath());
     }
 
+    /**
+     * getResources
+     *
+     * @param context context
+     * @return resources
+     */
     public Resources getResources(Context context) {
         return ApkResources.getResources(context, getApkPath());
     }
 
+    /**
+     * getAssets
+     *
+     * @param context context
+     * @return asset
+     */
     public AssetManager getAssets(Context context) {
         return ApkResources.getAssets(context, getApkPath());
     }
 
+    /**
+     * getContext
+     *
+     * @param baseContext baseContext
+     * @return context
+     */
     public Context getContext(Context baseContext) {
         if (context == null) {
             context = ApkContext.get(baseContext.getApplicationContext(), this);
@@ -296,14 +313,21 @@ public class ApkLoaded {
         return context;
     }
 
-    public <T> T getModel(Class<T> clazz, String className) {
+    /**
+     * getInterface
+     *
+     * @param clazz     clazz
+     * @param className className
+     * @param <T>       type
+     * @return interface
+     */
+    public <T> T getInterface(Class<T> clazz, String className) {
         if (clazz != null) {
-            ApkModel<T> builder = new ApkModel<T>(clazz);
-            return builder.getModel(getApkPath(), className);
+            ApkInterface<T> builder = new ApkInterface<T>(clazz);
+            return builder.getInterface(getApkPath(), className);
         }
         return null;
     }
-
 
     /**
      * getActivityInfo
